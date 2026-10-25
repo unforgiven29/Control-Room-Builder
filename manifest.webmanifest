@@ -1,0 +1,11 @@
+{
+  "name": "Control Board Layout",
+  "short_name": "Board Layout",
+  "description": "Lay out power plant control boards on a real-size grid.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#141617",
+  "theme_color": "#141617",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
