@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Lay out 1970s/80s power plant control boards on a real-size grid: GE and Electroswitch switches, Yokogawa meters, Bailey stations, annunciators, mimics, room plans and PDF export.">
+<meta name="description" content="Lay out 1970s/80s power plant control boards on a real-size grid.">
 <meta name="theme-color" content="#141617">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -12,7 +12,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* base reset (in the Claude viewer this comes from the page wrapper) */
 html{color-scheme:dark}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -156,6 +155,7 @@ table.devlist{width:100%;border-collapse:collapse;font-size:13px;min-width:760px
 .shareopt b{display:block;font-size:14px}
 .shareopt span{display:block;font-size:12.5px;color:var(--muted);line-height:1.45;margin-top:2px}
 .hintbox{padding:2px 12px 8px;font-size:12px;color:var(--muted);line-height:1.5}
+.tiles{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
 .measure{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:8}
 .measlbl{position:absolute;transform:translate(-50%,-130%);background:#1b1c1d;color:#fff;border:1px solid #e3a43b;border-radius:4px;padding:3px 8px;font:600 12px/1.35 var(--mono);text-align:center;pointer-events:none;z-index:9;white-space:nowrap}
 .measlbl span{display:block;font-weight:400;font-size:10.5px;color:#d8d4c8}
@@ -370,6 +370,7 @@ const INFO = {
   aj:'Bailey AJ series auto/hand station. The left meter shows the loading signal, the right meter the control output, the center selector switches between AUTO and HAND, and the bottom knob raises the output by hand.',
   ew185:'Yokogawa Edgewise 185 panel meter. The thin bezel lets you stack them tightly, three high or side by side; set it horizontal or vertical.',
   sema:'Semaphore indicator: a bar that turns to show a breaker or valve closed (in line with the mimic) or open (across it). Place it on a mimic line.',
+  ltext:'Lettering painted or engraved right on the board tiles, like real labels on a tile mimic board. It never blocks other parts.',
   note:'A sticky note for planning. Notes never block parts, can be hidden in Settings, and are left out of the device list and parts counts.',
   clock:'Wall clock for the top of the boards or the back wall. Choose 8, 12 or 15 in, a white or black face, and a fixed time or the live time.',
   dclock:'Red LED digital clock, the kind mounted above the boards so every operator can read plant time.',
@@ -419,6 +420,7 @@ const TYPES = {
   msym:    {name:'Mimic symbol',     sub:'Pump, fan, valve, tank, breaker…', group:'Mimic', w:2, h:2, prefix:'MS', d:{label:'',shape:'pump',color:'feed',filled:false}},
   sema:    {name:'Semaphore indicator', sub:'Rotating bar shows open or closed on the mimic', group:'Mimic', w:3, h:3, prefix:'SI', d:{label:'',state:'closed',axis:'horizontal',color:'redgreen'}},
   header:  {name:'Section nameplate', sub:'Engraved board-section title', group:'Nameplates', w:16, h:2, prefix:'NP', d:{label:'BOILER FEED PUMPS',wc:16,style:'black'}},
+  ltext:   {name:'Lettering', sub:'Text painted or engraved on the tiles', group:'Tiles', annot:true, w:6, h:2, prefix:'TXT', d:{label:'',text:'FEEDWATER',lsize:1,lcolor:'#f4f2ea',bold:true}},
   clock:   {name:'Wall clock', sub:'Round analog clock · 8, 12 or 15 in', group:'Clocks', w:24, h:24, prefix:'CLK', d:{label:'',style:'analog',size:12,face:'white',time:'10:09:30',live:false,secs:true}},
   dclock:  {name:'Digital clock', sub:'Red LED · HH:MM or HH:MM:SS', group:'Clocks', w:16, h:5, prefix:'CLK', d:{label:'',fmt:'hms',hour24:true,led:'red',time:'14:09:30',live:false}},
   note:    {name:'Sticky note', sub:'Planning note · never blocks parts', group:'Notes', annot:true, w:8, h:6, prefix:'NOTE', d:{label:'',text:'Check this spacing against the boiler board',nw:8,nh:6,ncolor:'yellow'}}
@@ -806,6 +808,10 @@ const DRAW = {
       else x += sp; });
     return s + `<g transform="translate(${(y+dh/2)*0.0875} 0) skewX(-5)"><g filter="url(#glow)" opacity=".45">${dg}</g>${dg}</g>`;
   },
+  ltext(it){
+    const {w,h} = dim(it), L = String(it.text||'').split('\n'), z = (+it.lsize||1)/CELL_IN*U, lh = z*1.25;
+    return L.map((t,i)=>`<text x="${w*U/2}" y="${(h*U - L.length*lh)/2 + lh*(i+0.5)}" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="${it.bold===false?500:700}" font-size="${z*1.05}" fill="${esc(it.lcolor||'#f4f2ea')}" text-anchor="middle" dominant-baseline="central" letter-spacing="${z*0.06}">${esc(t)}</text>`).join('');
+  },
   es24(it){
     const P = positions(it), n = P.length, cx=125, cy=236, W='#ecebe4';
     const ang = i => n===1 ? 0 : n===2 ? (i ? 45 : -45) : (i-(n-1)/2)*45;
@@ -937,7 +943,9 @@ const DRAW = {
     s += `<text x="${W/2}" y="51" ${F} font-weight="700" font-size="${Math.min(54,(W-70)/(Math.max(1,t.length)*0.55)).toFixed(1)}" fill="${st[1]}" text-anchor="middle" dominant-baseline="central" letter-spacing="3">${esc(t)}</text>`;
     return s;
   },
-  msym(it){ const r = ((+it.rot||0)%360+360)%360; return r ? `<g transform="rotate(${r} 50 50)">${DRAW.msymBody(it)}</g>` : DRAW.msymBody(it); },
+  msym(it){ const r = ((+it.rot||0)%360+360)%360;
+    if (it.shape==='check' && r===180) return `<g transform="translate(100 0) scale(-1 1)">${DRAW.msymBody(it)}</g>`;
+    return r ? `<g transform="rotate(${r} 50 50)">${DRAW.msymBody(it)}</g>` : DRAW.msymBody(it); },
   msymBody(it){
     const c = (MIMIC[it.color]||MIMIC.feed)[1], f = it.filled ? c : DRAWPAINT, st = `stroke="${c}" stroke-width="9" stroke-linejoin="round"`;
     switch (it.shape){
@@ -1300,6 +1308,8 @@ function dim(x){
   if (it.type==='header') return {w: clamp(Math.round(+it.wc)||16,4,120), h: t.h};
   if (it.type==='clock'){ const n = ({8:16,12:24,15:30})[+it.size] || 24; return {w:n, h:n}; }
   if (it.type==='dclock') return it.fmt==='hm' ? {w:11, h:5} : {w:16, h:5};
+  if (it.type==='ltext'){ const L = String(it.text||' ').split('\n'), z = +it.lsize||1, long = Math.max(1,...L.map(l=>l.length));
+    return {w: clamp(Math.ceil(long*z*0.66/CELL_IN)+1, 1, 200), h: clamp(Math.ceil(L.length*z*1.25/CELL_IN), 1, 100)}; }
   if (it.type==='note') return {w: clamp(Math.round(+it.nw)||8,3,60), h: clamp(Math.round(+it.nh)||6,2,60)};
   if (it.type==='ew185') return it.orient==='vertical' ? {w:3, h:8} : {w:8, h:3};
   return {w:t.w, h:t.h};
@@ -1384,6 +1394,21 @@ function mimicMarkup(mimics, k, bg){
       if (v.x1 > hx0 && v.x1 < hx1 && h.y1 > vy0 && h.y1 < vy1)
         gaps += `<rect x="${(v.x1 - v.w/2 - 0.06)*k}" y="${(h.y1 - h.w/2 - pad)*k}" width="${(v.w+0.12)*k}" height="${(h.w + 2*pad)*k}" fill="${bg}"/>`; } }
   return s + gaps + H.map(line).join('');
+}
+function tilesSvg(p, k, cls){
+  const t = p.tiles || {}, keys = Object.keys(t); if (!keys.length) return '';
+  let s = cls ? `<svg class="${cls}" viewBox="0 0 ${p.cols} ${p.rows}" preserveAspectRatio="none" aria-hidden="true">` : '';
+  for (const key of keys){ const [x,y] = key.split(',').map(Number); if (x>=p.cols || y>=p.rows) continue;
+    s += `<rect x="${x*k}" y="${y*k}" width="${k}" height="${k}" fill="${t[key]}"/>`; }
+  return s + (cls ? '</svg>' : '');
+}
+function paintAt(e){
+  const p = panel(), [cx,cy] = cellAt(e), x = Math.floor(cx), y = Math.floor(cy); if (x<0||y<0||x>=p.cols||y>=p.rows) return;
+  const key = `${x},${y}`, erase = e.altKey || ui.paintErase, b = ui.paintBrush||1; p.tiles ||= {};
+  for (let i=0;i<b;i++) for (let j=0;j<b;j++){ const k2 = `${x+i},${y+j}`; if (x+i>=p.cols||y+j>=p.rows) continue;
+    if (erase) delete p.tiles[k2]; else p.tiles[k2] = SET().tileColor || '#d4302a'; }
+  const el = board.querySelector('svg.tiles'); const html = tilesSvg(p,1,'tiles');
+  if (el) { if (html) el.outerHTML = html; else el.remove(); } else if (html) board.insertAdjacentHTML('afterbegin', html);
 }
 function mimicSvg(p){
   let s = `<svg class="mimics" viewBox="0 0 ${p.cols} ${p.rows}" preserveAspectRatio="none" aria-hidden="true">`;
@@ -1513,6 +1538,7 @@ function renderPartsInner(){
       <div class="keys" style="padding:8px 12px">Drag a board to move it · <kbd>[</kbd> <kbd>]</kbd> rotate 5°, with Shift 15° · arrows nudge 1 in, with Shift 1 ft · double-click a board to open it</div>`;
     return; }
   let html = `<div class="group" style="border-top:0;margin-top:0">Tools</div><button class="part" data-type="measure" aria-pressed="${ui.tool==='measure'}" title="Measure the distance between two points. Shortcut: M"><span class="thumb"><svg viewBox="0 0 100 100"><line x1="14" y1="70" x2="86" y2="30" stroke="#e3a43b" stroke-width="6"/><circle cx="14" cy="70" r="7" fill="#e3a43b"/><circle cx="86" cy="30" r="7" fill="#e3a43b"/><rect x="34" y="32" width="38" height="20" rx="3" fill="#1a1a1a"/><text x="53" y="46" font-family="IBM Plex Mono, monospace" font-size="13" fill="#fff" text-anchor="middle">12″</text></svg></span><span><b>Measure</b><span>Drag between two points</span><i>shortcut M</i></span></button>`;
+  html += `<button class="part" data-type="paint" aria-pressed="${ui.tool==='paint'}" title="Paint grid tiles another color. Shortcut: P"><span class="thumb"><svg viewBox="0 0 100 100"><g stroke="#2a2d2e" stroke-width="2"><rect x="10" y="10" width="26" height="26" fill="#d4302a"/><rect x="37" y="10" width="26" height="26" fill="#d4302a"/><rect x="64" y="10" width="26" height="26" fill="#9db5a1"/><rect x="10" y="37" width="26" height="26" fill="#d4302a"/><rect x="37" y="37" width="26" height="26" fill="#f1eee2"/><rect x="64" y="37" width="26" height="26" fill="#9db5a1"/><rect x="10" y="64" width="26" height="26" fill="#9db5a1"/><rect x="37" y="64" width="26" height="26" fill="#9db5a1"/><rect x="64" y="64" width="26" height="26" fill="#2c69cf"/></g></svg></span><span><b>Paint tiles</b><span>Color single grid tiles</span><i>shortcut P</i></span></button>`;
   html += `<div class="group">Saved sections</div>`;
   if (!lib().length) html += `<div class="hintbox">Select a group of devices, then use “Save as section” in the inspector to reuse it on any board.</div>`;
   html += lib().map(sc=>`<div class="secrow"><button class="part" data-type="sec:${sc.id}" aria-pressed="${ui.tool==='sec:'+sc.id}"><span class="thumb">${sectionSvg(sc)}</span><span><b>${esc(sc.name)}</b><span>${sc.items.length} device${sc.items.length===1?'':'s'}${(sc.mimics||[]).length?` + ${sc.mimics.length} mimic line${sc.mimics.length===1?'':'s'}`:''}</span><i>${inches(sc.w)} × ${inches(sc.h)} in</i></span></button><button class="secdel${ui.secDel===sc.id?' confirm':''}" data-secdel="${sc.id}" title="Delete this saved section" aria-label="Delete ${esc(sc.name)}">${ui.secDel===sc.id?'Delete?':'×'}</button></div>`).join('');
@@ -1535,10 +1561,10 @@ function renderBoard(){
     linear-gradient(to bottom, ${rgba(gc,ga)} 1px, transparent 1px) 0 0/${mj}px ${mj}px,
     linear-gradient(to right, ${rgba(gc,ga*0.4)} 1px, transparent 1px) 0 0/${c}px ${c}px,
     linear-gradient(to bottom, ${rgba(gc,ga*0.4)} 1px, transparent 1px) 0 0/${c}px ${c}px, ${bg}` : bg;
-  b.classList.toggle('placing', !!ui.tool && ui.tool!=='measure'); b.classList.toggle('measuring', ui.tool==='measure');
+  b.classList.toggle('placing', !!ui.tool && ui.tool!=='measure' && ui.tool!=='paint'); b.classList.toggle('measuring', ui.tool==='measure' || ui.tool==='paint');
   let deco = '';
   if (p.split!=null) deco += `<div class="bench" style="top:${(p.split+1)*c}px"></div>`;
-  deco += mimicSvg(p);
+  deco = tilesSvg(p,1,'tiles') + deco + mimicSvg(p);
   if (ui.tool==='measure') deco += measSvg();
   if (st.showZones){ const lines = [[70,'70 in · top of reach and display zone'],[34,'34 in · lowest comfortable control']], vt = vTopRow(p), base = boardBase(p);
     const rowAt = h => vt - (h-base)/CELL_IN;
@@ -1549,7 +1575,7 @@ function renderBoard(){
   const dm = dupMap();
   if (!p.items.length && !(p.mimics||[]).length && !ui.tool) deco += `<div class="emptyhint"><b>This board is empty</b><span>Pick a part on the left, then click here to place it. A saved section drops in a whole group at once.</span></div>`;
   const showNotes = st.showNotes!==false;
-  b.innerHTML = deco + p.items.filter(it=>showNotes || !isAnnot(it)).map(it=>{ const t=TYPES[it.type], d=dim(it);
+  b.innerHTML = deco + p.items.filter(it=>showNotes || it.type!=='note').map(it=>{ const t=TYPES[it.type], d=dim(it);
     return `<div class="item${it.id===ui.sel||ui.group.has(it.id)?' sel':''}${fits(p,it,it.x,it.y,it.id)?'':' invalid'}" data-id="${it.id}" title="${esc(it.tag)} · ${esc(t.name)}" style="left:${it.x*c}px;top:${it.y*c}px;width:${d.w*c}px;height:${d.h*c}px">${svgFor(it)}${st.showTags&&it.tag?`<span class="tagchip">${esc(it.tag)}</span>`:''}${isDup(dm,it)?'<span class="dupchip" title="This tag is used more than once">!</span>':''}${it.note&&!isAnnot(it)?`<span class="notechip" title="${esc(it.note)}">✎</span>`:''}</div>`; }).join('');
   ui.ghost = null;
   renderStatus();
@@ -1559,7 +1585,8 @@ function renderStatus(){
   if (ui.view==='list'){ const nd = [...dupMap().values()].filter(v=>v>1).length;
     $('status').innerHTML = `<b>Device list</b> · ${S.panels.reduce((n,q)=>n+q.items.length,0)} devices on ${S.panels.length} board${S.panels.length>1?'s':''}${nd?` · <span style="color:var(--bad)">${nd} duplicate tag${nd>1?'s':''}</span>`:''} · click a tag or nameplate to edit it · Show jumps to the device`; return; }
   if (ui.view==='room'){ $('status').innerHTML = `<b>Room</b> · ${+(S.room.w/12).toFixed(1)} × ${+(S.room.d/12).toFixed(1)} ft · ${S.panels.length} boards · drag a board to move it · [ and ] rotate · double-click to open it`; return; }
-  const hint = ui.tool==='measure' ? `<span class="hint">Drag between two points · Shift keeps it straight · Alt measures to ⅛ in · Esc to stop</span>`
+  const hint = ui.tool==='paint' ? `<span class="hint">Click or drag to paint tiles · Alt-drag erases · Esc to stop</span>`
+    : ui.tool==='measure' ? `<span class="hint">Drag between two points · Shift keeps it straight · Alt measures to ⅛ in · Esc to stop</span>`
     : ui.tool==='mimic' ? `<span class="hint">Click to start and add bends · double-click or Enter to finish · Esc to stop</span>`
     : ui.tool ? `<span class="hint">Click the board to place ${esc(secOf(ui.tool)?.name || TYPES[ui.tool]?.name || '')} · Esc to stop</span>`
     : ui.selMimic ? `Arrows move the line · Del removes it`
@@ -1603,6 +1630,18 @@ function renderInspector(){
       h += `<details class="guide" open id="ckRoom"><summary>Room check · ${ck.length ? `${nb} to fix, ${ck.length-nb} tip${ck.length-nb===1?'':'s'}` : 'all clear'}</summary>${checkList(ck)}<p class="readout">Rules of thumb: 36–48 in of aisle in front of boards, and either no gap or 24–36 in behind them for service.</p></details>`; }
     box.innerHTML = h; return;
   }
+  if (ui.tool==='paint'){
+    const st = SET(), cur = st.tileColor || '#d4302a', n = Object.keys(p.tiles||{}).length;
+    const sw = [['#d4302a','Red'],['#2c9e4b','Green'],['#2c69cf','Blue'],['#e9cf2b','Yellow'],['#ee9a1c','Orange'],['#f1eee2','White'],['#1b1b1b','Black'],['#7a5230','Brown'],['#a6adaf','Gray'],['#9db5a1','Seafoam']];
+    $('inspHead').textContent = 'Paint tiles';
+    box.innerHTML = `<div><div class="title">Paint tiles</div><div class="sub">Each grid square is a ½ in tile. Paint them to make colored zones, bands and backgrounds, like a real tile mimic board.</div></div>
+      <div class="field"><label>Color</label><div class="swatches">${sw.map(([c,t])=>`<button class="sw" data-tile="${c}" aria-pressed="${!ui.paintErase && cur===c}" title="${t}" style="background:${c};width:34px;height:28px"></button>`).join('')}<input type="color" id="tileColor" value="${cur}" title="Any color"></div></div>
+      <div class="row2">${selectField('Brush','brush',ui.paintBrush||1,[[1,'1 tile (½ in)'],[2,'2 × 2 tiles'],[4,'4 × 4 tiles']])}<div class="field"><label for="f_erase">Mode</label><label class="readout"><input id="f_erase" type="checkbox"${ui.paintErase?' checked':''}> Erase</label></div></div>
+      <div class="readout">${n} painted tile${n===1?'':'s'} on this board.</div>
+      <button class="btn danger" id="clearTiles">${ui.confirmTiles?'Click again to clear them':'Clear painted tiles on this board'}</button>
+      <div class="keys">Add text on the tiles with <b>Lettering</b> in the parts list. <kbd>Alt</kbd>-drag erases, <kbd>Esc</kbd> or <kbd>P</kbd> stops.</div>`;
+    return;
+  }
   if (ui.tool==='measure'){
     $('inspHead').textContent = 'Measure';
     box.innerHTML = `<div><div class="title">Measure</div><div class="sub">Drag on the board from one point to another. Points snap to the ½ in grid.</div></div><div id="measInfo"></div>
@@ -1636,7 +1675,7 @@ function renderInspector(){
     const dd = dim(it);
     let h = `<div><div class="title">${t.name}</div><div class="sub">${t.sub} · ${inches(dd.w)} × ${inches(dd.h)} in</div></div>`;
     if (INFO[it.type]) h += `<p class="info">${esc(INFO[it.type])}</p>`;
-    if (it.type!=='note') h += `<div class="row2">${field('Tag','tag',it.tag)}${field(it.type==='header'?'Title':'Nameplate','label',it.label)}</div>`;
+    if (it.type!=='note' && it.type!=='ltext') h += `<div class="row2">${field('Tag','tag',it.tag)}${field(it.type==='header'?'Title':'Nameplate','label',it.label)}</div>`;
     { const t = String(it.tag||'').trim().toLowerCase(); const others = t ? S.panels.flatMap(q=>q.items.filter(o=>o.id!==it.id && String(o.tag||'').trim().toLowerCase()===t).map(o=>q.name)) : [];
       if (others.length) h += `<div class="warn">This tag is also used by ${others.length} other device${others.length>1?'s':''} (${esc([...new Set(others)].join(', '))}).</div>`; }
     if (it.type==='sbmk'||it.type==='sbmo'||it.type==='sbmb'){
@@ -1780,6 +1819,10 @@ FW FLOW/LO</pre>
         h += `<div class="row2">${field('Tag',`ch${i}.tag`,c.tag)}${field('Units',`ch${i}.units`,c.units)}</div>`;
         h += `<div class="row3">${field('Min',`ch${i}.min`,c.min,'number','step="any"')}${field('Max',`ch${i}.max`,c.max,'number','step="any"')}${field('Value',`ch${i}.value`,c.value,'number','step="any"')}</div>`;
       }
+    }
+    if (it.type==='ltext'){
+      h += `<div class="field"><label for="f_text">Text</label><textarea id="f_text" data-k="text" rows="2">${esc(it.text||'')}</textarea></div>`;
+      h += `<div class="row3">${selectField('Letter height','lsize',it.lsize||1,[[0.25,'¼ in'],[0.5,'½ in'],[0.75,'¾ in'],[1,'1 in'],[1.5,'1½ in'],[2,'2 in'],[3,'3 in']])}<div class="field"><label for="f_lcolor">Color</label><input id="f_lcolor" data-k="lcolor" type="color" value="${esc(it.lcolor||'#f4f2ea')}"></div>${selectField('Weight','bold',it.bold===false?'n':'b',[['b','Bold'],['n','Regular']])}</div>`;
     }
     if (it.type==='note'){
       h += `<div class="field"><label for="f_text">Note</label><textarea id="f_text" data-k="text" rows="5">${esc(it.text||'')}</textarea></div>`;
@@ -1990,6 +2033,7 @@ function toolSpot(e){ const t = dim(ui.tool), p = panel(), [cx,cy] = cellAt(e);
 board.addEventListener('pointermove', e=>{
   const [cx,cy] = cellAt(e); ui.lastCell = [Math.floor(cx), Math.floor(cy)]; $('cursor').textContent = `col ${Math.floor(cx)}, row ${Math.floor(cy)}`;
   if (ui.tool==='mimic'){ if (ui.mdraw && ui.mdraw.length){ ui.mcur = snapMimic(e); refreshMimics(); } return; }
+  if (ui.tool==='paint'){ if (ui.painting) paintAt(e); return; }
   if (ui.tool==='measure'){ if (ui.meas && ui.meas.drag){ ui.meas.b = measPoint(e); refreshMeasure(); renderMeasInfo(); } return; }
   if (ui.raildrag){ const p = panel(), row = clamp(Math.round(cy-0.5), 2, p.rows-3);
     if (row!==ui.raildrag.row){ ui.raildrag.row = row; const c = cell(), rl = board.querySelector('.rail'), bn = board.querySelector('.bench');
@@ -2016,6 +2060,7 @@ board.addEventListener('pointermove', e=>{
 board.addEventListener('pointerleave', ()=>{ if (ui.ghost && !ui.drag){ ui.ghost.remove(); ui.ghost=null; } });
 board.addEventListener('pointerdown', e=>{
   if (e.button!==0) return;
+  if (ui.tool==='paint'){ checkpoint(); ui.painting = true; board.setPointerCapture(e.pointerId); paintAt(e); return; }
   if (ui.tool==='measure'){ ui.meas = {a:null}; ui.meas.a = measPoint(e); ui.meas.b = ui.meas.a; ui.meas.drag = true; board.setPointerCapture(e.pointerId); refreshMeasure(); return; }
   if (ui.tool==='mimic'){
     const q = snapMimic(e), l = ui.mdraw && ui.mdraw[ui.mdraw.length-1];
@@ -2047,6 +2092,7 @@ board.addEventListener('pointerdown', e=>{
 });
 board.addEventListener('dblclick', ()=>{ if (ui.tool==='mimic' && ui.mdraw) finishMimic(); });
 board.addEventListener('pointerup', e=>{
+  if (ui.tool==='paint' && ui.painting){ ui.painting = false; save(); renderInspector(); return; }
   if (ui.tool==='measure' && ui.meas && ui.meas.drag){ ui.meas.drag = false; renderInspector(); return; }
   if (ui.raildrag){ const row = ui.raildrag.row; ui.raildrag = null; const p = panel();
     if (row!==p.split){ checkpoint(); p.split = row; save(); const bad = p.items.filter(i=>!fits(p,i,i.x,i.y,i.id)).length;
@@ -2126,13 +2172,21 @@ $('insp').addEventListener('click', e=>{
 $('insp').addEventListener('keydown', e=>{ if (e.target.id==='secName' && e.key==='Enter'){ e.preventDefault(); saveSection(e.target.value.trim()); } });
 $('insp').addEventListener('focusin', e=>{ const k = e.target.dataset.k; if (k && !k.startsWith('rep_')) checkpoint(); });
 $('insp').addEventListener('input', e=>{
+  if (e.target.id==='tileColor'){ SET().tileColor = e.target.value; ui.paintErase = false; save(); return; }
+  if (e.target.id==='f_erase'){ ui.paintErase = e.target.checked; return; }
   const k = e.target.dataset.k; if (!k) return;
   const target = sel() || selMimic() || panel();
   let v = e.target.type==='checkbox' ? e.target.checked : e.target.value;
   if (ui.view==='room' && ROOMK.has(k)){ roomInput(k, v); return; }
   if (k==='p0' || k==='p1'){ const P = positions(target); P[+k[1]] = String(v).trim() || (k==='p0'?'TRIP':'CLOSE'); target.positions = P.join(','); save(); renderBoard(); return; }
+  if (e.target.id==='tileColor'){ SET().tileColor = e.target.value; ui.paintErase = false; save(); return; }
+  if (e.target.id==='f_erase'){ ui.paintErase = e.target.checked; return; }
+  if (k==='brush' && ui.tool==='paint'){ ui.paintBrush = +v; return; }
   if (k.startsWith('rep_')){ ui.rep ||= {n:4,dir:'right',gap:1}; const f = k.slice(4); ui.rep[f] = f==='dir' ? v : +v;
     const rb = $('repBtn'); if (rb) rb.textContent = `Make ${ui.rep.n} cop${+ui.rep.n===1?'y':'ies'}`; return; }
+  if (k==='bold' && sel()){ sel().bold = v==='b'; save(); renderBoard(); return; }
+  if (k==='lsize' && sel()){ sel().lsize = +v; save(); renderBoard(); renderInspector(); return; }
+  if (k==='text' && sel() && sel().type==='ltext'){ sel().text = v; save(); renderBoard(); return; }
   if (k==='secs' && sel()){ sel().secs = v==='yes'; save(); renderBoard(); return; }
   if (k==='hour24' && sel()){ sel().hour24 = v==='24'; save(); renderBoard(); return; }
   if (k==='size' && sel()){ const it = sel(); it.size = +v; if (!fits(panel(),it,it.x,it.y,it.id)) setTimeout(()=>flash('The bigger clock overlaps something — move it or Undo.'),0); save(); renderBoard(); renderInspector(); return; }
@@ -2177,6 +2231,9 @@ $('insp').addEventListener('click', e=>{
   if (e.target.id==='delBtn') removeSel();
   if (e.target.id==='delMimic') removeMimic();
   if (e.target.id==='repBtn') repeatSel();
+  const tb = e.target.closest('[data-tile]'); if (tb){ SET().tileColor = tb.dataset.tile; ui.paintErase = false; save(); renderInspector(); }
+  if (e.target.id==='clearTiles'){ if (!ui.confirmTiles){ ui.confirmTiles = true; renderInspector(); setTimeout(()=>{ ui.confirmTiles = false; if (ui.tool==='paint') renderInspector(); }, 3000); return; }
+    ui.confirmTiles = false; checkpoint(); panel().tiles = {}; save(); renderBoard(); renderInspector(); }
   if (e.target.dataset.turn) turnSel(+e.target.dataset.turn);
   if (e.target.id==='secSave') saveSection($('secName').value.trim());
   if (e.target.id==='rnBtn') renameTags();
@@ -2263,6 +2320,7 @@ document.addEventListener('keydown', e=>{
   if (mod && key==='c'){ if (selIds().length){ e.preventDefault(); copySel(); } return; }
   if (mod && key==='v'){ if (ui.clip){ e.preventDefault(); pasteClip(); } return; }
   if (mod && key==='a'){ e.preventDefault(); setSelection(panel().items.map(i=>i.id)); renderBoard(); renderInspector(); return; }
+  if (!mod && key==='p'){ e.preventDefault(); setTool('paint'); return; }
   if (!mod && key==='m'){ e.preventDefault(); setTool('measure'); return; }
   if (!mod && key==='r' && selIds().length){ if (turnSel(e.shiftKey ? -90 : 90)) e.preventDefault(); return; }
   if ((e.key==='Delete'||e.key==='Backspace') && selIds().length){ e.preventDefault(); removeSel(); return; }
@@ -2421,12 +2479,13 @@ function boardSVGInner(p, pc){
     for (let x=0;x<=p.cols;x++) s += `<line x1="${x*U}" y1="0" x2="${x*U}" y2="${H}" stroke="${gc}" stroke-opacity="${x%mj?ga*0.4:ga}" stroke-width="${x%mj?1.5:2.5}"/>`;
     for (let y=0;y<=p.rows;y++) s += `<line x1="0" y1="${y*U}" x2="${W}" y2="${y*U}" stroke="${gc}" stroke-opacity="${y%mj?ga*0.4:ga}" stroke-width="${y%mj?1.5:2.5}"/>`;
   }
+  s += tilesSvg(p, U, '');
   s += mimicMarkup(p.mimics, U, paint(p));
   if (p.split!=null){
     const y = p.split*U;
     s += `<rect y="${y}" width="${W}" height="${U}" fill="url(#railg)"/><text x="${U*0.6}" y="${y+U*0.62}" font-family="Courier New, monospace" font-size="${U*0.45}" fill="#2a2e2f">VERTICAL SECTION</text><text x="${W-U*0.6}" y="${y+U*0.62}" font-family="Courier New, monospace" font-size="${U*0.45}" fill="#2a2e2f" text-anchor="end">BENCH BOARD</text>`;
   }
-  for (const it of p.items){ if (st.showNotes===false && isAnnot(it)) continue; const d = dim(it);
+  for (const it of p.items){ if (st.showNotes===false && it.type==='note') continue; const d = dim(it);
     s += `<svg x="${it.x*U}" y="${it.y*U}" width="${d.w*U}" height="${d.h*U}" viewBox="0 0 ${d.w*U} ${d.h*U}" overflow="visible">${drawItem(it)}</svg>`; }
   return s + '</svg>';
 }
@@ -2517,7 +2576,7 @@ async function shareHTML(){
     const imgs = []; for (const p of S.panels) imgs.push(await boardImage(p));
     const room = await roomImage(), date = new Date().toLocaleDateString();
     const rows = p => p.items.filter(i=>!isAnnot(i)).sort((a,b)=>a.y-b.y||a.x-b.x).map(i=>`<tr><td>${esc(i.tag)}</td><td>${esc(TYPES[i.type].name)}</td><td>${esc(i.label||'')}</td><td>${p.split==null||i.y<p.split?'Vertical':'Bench'}</td><td>${inches(i.x)}, ${inches(i.y)}</td><td>${esc(i.note||'')}</td></tr>`).join('');
-    const notes = p => p.items.filter(isAnnot).map(n=>`<li>${esc(n.text||'')}</li>`).join('');
+    const notes = p => p.items.filter(i=>i.type==='note').map(n=>`<li>${esc(n.text||'')}</li>`).join('');
     const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Control room layout</title>
 <style>body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f2ee;color:#1c1d1e}main{max-width:1200px;margin:0 auto;padding:24px 16px}h1{margin:0 0 4px;font-size:28px}h2{margin:36px 0 6px;font-size:21px}.meta{color:#666}img{max-width:100%;border:1px solid #bbb;border-radius:4px;background:#fff}nav a{margin-right:14px}table{border-collapse:collapse;width:100%;font-size:13px;margin-top:10px;background:#fff}th,td{text-align:left;padding:5px 8px;border-bottom:1px solid #ddd}th{background:#e7e5df}.wrap{overflow-x:auto}</style></head><body><main>
 <h1>Control room layout</h1><div class="meta">${S.panels.length} boards · ${S.panels.reduce((n,p)=>n+p.items.filter(i=>!isAnnot(i)).length,0)} devices · ½-inch grid · shared ${esc(date)}</div>
