@@ -2,7 +2,7 @@
 
 Lay out 1970s/80s American power plant control boards on a real-size ½-inch grid, then arrange them into a control room.
 
-**[Open the app](https://unforgiven29.github.io/control-board-layout/)**
+**[Open the app](https://unforgiven29.github.io/Control-Room-Builder/)**
 
 ## What it does
 
