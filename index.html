@@ -234,6 +234,8 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
     <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#f0d488"/><stop offset=".45" stop-color="#b98f2f"/><stop offset=".7" stop-color="#e8c66c"/><stop offset="1" stop-color="#7f601d"/>
     </linearGradient>
+    <radialGradient id="crtglass" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".5" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></radialGradient>
+    <filter id="crtglow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>
     <radialGradient id="glass" cx=".3" cy=".18" r=".9">
       <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
@@ -371,6 +373,8 @@ const INFO = {
   ew185:'Yokogawa Edgewise 185 panel meter. The thin bezel lets you stack them tightly, three high or side by side; set it horizontal or vertical.',
   sema:'Semaphore indicator: a bar that turns to show a breaker or valve closed (in line with the mimic) or open (across it). Place it on a mimic line.',
   ltext:'Lettering painted or engraved right on the board tiles, like real labels on a tile mimic board. It never blocks other parts.',
+  crt:'CRT monitor like the first plant computer screens of the late 70s and 80s. Type your own lines of text, or show a trend or bar graph.',
+  lcd:'LCD panel in any size: a gray-green reflective display or a backlit one. Type your own text or show a bar graph.',
   note:'A sticky note for planning. Notes never block parts, can be hidden in Settings, and are left out of the device list and parts counts.',
   clock:'Wall clock for the top of the boards or the back wall. Choose 8, 12 or 15 in, a white or black face, and a fixed time or the live time.',
   dclock:'Red LED digital clock, the kind mounted above the boards so every operator can read plant time.',
@@ -391,11 +395,11 @@ const SHAPES = [['pump','Pump'],['fan','Fan'],['motor','Motor'],['valve','Valve'
 const BOARD_COLORS = {seafoam:['Seafoam green','#9db5a1'],gray:['ANSI 61 gray','#a6adaf'],tan:['Desert tan','#c3b799'],slate:['Slate','#6e797c']};
 
 const TYPES = {
-  sb1:     {name:'GE SB-1',          sub:'Pistol-grip control switch', group:'Switches', w:5,  h:10, prefix:'CS',  d:{label:'FEED PUMP',legend:'BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,flag:'green'}},
+  sb1:     {name:'GE SB-1',          sub:'Control switch · pistol grip or key lock', group:'Switches', w:5,  h:10, prefix:'CS',  d:{label:'FEED PUMP',legend:'BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,flag:'green'}},
   cr104p:  {name:'GE CR104P',        sub:'Oil-tight · selector, key or pushbutton',  group:'Switches', w:4,  h:5,  prefix:'SS',  d:{label:'VALVE',positions:'OPEN,AUTO,CLOSE',pos:1,op:'knob',keyIn:true,color:'black',head:'flush'}},
   sbmk:    {name:'GE SBM', sub:'Rotary control switch · knurled, oval or breaker handle', group:'Switches', w:5, h:7, prefix:'SS', d:{label:'AMMETER',legend:'AMMETER',positions:'C,OFF,A,B',pos:1,knob:'knurled',spring:false}},
   sbmo:    {name:'GE SBM', sub:'Rotary control switch · oval handle', hidden:true, group:'Switches', w:5, h:7, prefix:'SS', d:{label:'PUMP 1A',legend:'',positions:'1,2',pos:0,knob:'oval',spring:false}},
-  sbmb:    {name:'GE SBM', sub:'Breaker control · pistol handle, target flag', hidden:true, group:'Switches', w:5, h:7, prefix:'CS', d:{label:'BKR 52-1A',legend:'BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,flag:'green',spring:true,knob:'pistol'}},
+  sbmb:    {name:'GE SBM', sub:'Breaker control · pistol handle, target flag', hidden:true, group:'Switches', w:5, h:10, prefix:'CS', d:{label:'BKR 52-1A',legend:'BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,flag:'green',spring:true,knob:'pistol'}},
   es24:    {name:'Electroswitch Series 24', sub:'Rotary switch, wing knob', group:'Switches', w:5, h:7, prefix:'SS', d:{label:'GEN AMMETER',legend:'AMMETER',positions:'OFF,1,2,3',pos:0,spring:false}},
   es24l:   {name:'Series 24 lighted', sub:'Breaker control with indicating lamps', group:'Switches', w:5, h:7, prefix:'CS', d:{label:'BKR 52-2A',legend:'BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,flag:'green',spring:true,lampA:false,lampG:true,lampR:false,lockout:false}},
   w2:      {name:'Electroswitch Type W-2', sub:'Breaker control, paddle handle, pull-out', group:'Switches', w:5, h:8, prefix:'CS', d:{label:'BKR 52-3A',legend:'CIRCUIT BREAKER CONTROL',positions:'TRIP,CLOSE',pos:-1,spring:true,flag:'green',pullOut:true}},
@@ -409,6 +413,8 @@ const TYPES = {
   dx1000:  {name:'Yokogawa DX1000',  sub:'Digital paperless recorder', group:'Digital gauges', w:12, h:12, prefix:'TR', d:{label:'MAIN STEAM',channels:4,ch:[
     {tag:'TI-101',units:'°F',min:0,max:1200,value:1050.4},{tag:'PI-102',units:'PSIG',min:0,max:4500,value:3612.0},
     {tag:'FI-103',units:'KLB/H',min:0,max:5000,value:4210.6},{tag:'TI-104',units:'°F',min:0,max:1200,value:1048.9}]}},
+  crt:     {name:'CRT display', sub:'Green, amber or white phosphor · 9 to 19 in', group:'Digital gauges', w:20, h:17, prefix:'CRT', d:{label:'UNIT 1 STATUS',diag:12,phos:'green',bezel:'beige',screen:'text',lines:'UNIT 1        14:09:30\nMW GROSS        612.4\nMAIN STM PSI   3612\nMAIN STM F     1050\nDRUM LVL IN      +1.5\nFW FLOW KLB/H  4180\n\n*** NO ALARMS ***'}},
+  lcd:     {name:'LCD display', sub:'Any size · gray-green or backlit', group:'Digital gauges', w:12, h:6, prefix:'LCD', d:{label:'',lw:6,lh:3,lstyle:'gray',screen:'text',lines:'GEN MW  612.4\nMVAR    +48.2'}},
   annun:   {name:'Annunciator',      sub:'7 × 6 lit-window alarm panel, 2 × 1.5 in windows', group:'Annunciators', w:28, h:18, prefix:'ANN', d:{label:'',acols:7,arows:6,lens:'white',
     windows:[
       'BFP 1A/TRIP','BFP 1B/TRIP','BFP 1A/LUBE OIL/LO PRESS','BFP 1B/LUBE OIL/LO PRESS','BFP 1A/BRG TEMP/HI','BFP 1B/BRG TEMP/HI','BFP/RECIRC/VLV FAIL',
@@ -484,6 +490,33 @@ function clockTime(it){
   const m = String(it.time||'').match(/^\s*(\d{1,2})(?::(\d{1,2}))?(?::(\d{1,2}))?/) || [];
   return [clamp(+m[1]||0,0,23), clamp(+m[2]||0,0,59), clamp(+m[3]||0,0,59)];
 }
+function displayContent(it, x, y, w, h, col, glow){
+  let s = '';
+  if (it.screen==='trend'){
+    for (let i=0;i<=4;i++){ const yy = y+h*i/4; s += `<line x1="${x}" y1="${yy}" x2="${x+w}" y2="${yy}" stroke="${col}" stroke-opacity=".25" stroke-width="${w/300}"/>`; }
+    const r = rng(hash(it.id||'d')); [0,1,2].forEach(k=>{ let v = .3+.4*r(), pts = [];
+      for (let i=0;i<=60;i++){ v = clamp(v+(r()-.5)*.08,.05,.95); pts.push(`${(x+w*i/60).toFixed(1)},${(y+h*(1-v)).toFixed(1)}`); }
+      s += `<polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="${w/(k?260:180)}" ${k?'stroke-dasharray="'+w/60+' '+w/90+'"':''}/>`; });
+  } else if (it.screen==='bars'){
+    const r = rng(hash(it.id||'b')), n = 8, bw = w/n;
+    for (let i=0;i<n;i++){ const v = .2+.75*r(); s += `<rect x="${x+i*bw+bw*.18}" y="${y+h*(1-v)}" width="${bw*.64}" height="${h*v}" fill="${col}" opacity=".9"/>`; }
+  } else {
+    const L = String(it.lines||'').split('\n'), n = Math.max(L.length, 4), lh = h/n, longest = Math.max(8, ...L.map(l=>l.length));
+    const fs = Math.min(lh*0.78, w/(longest*0.62));
+    L.forEach((t,i)=>{ s += `<text x="${x}" y="${y+lh*(i+0.5)}" font-family="IBM Plex Mono, Courier New, monospace" font-size="${fs.toFixed(1)}" fill="${col}" dominant-baseline="central" xml:space="preserve">${esc(t)}</text>`; });
+  }
+  return glow ? `<g filter="url(#crtglow)">${s}</g>${s}` : s;
+}
+function keyHandle(cx, cy, a, keyIn){
+  let s = `<g transform="rotate(${a} ${cx} ${cy})">`;
+  s += `<rect x="${cx-11}" y="${cy+20}" width="22" height="220" rx="10" fill="url(#brass)" stroke="#6e521a" stroke-width="1.5"/><rect x="${cx-6}" y="${cy+24}" width="4" height="210" fill="#fff" opacity=".18"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="38" fill="url(#brass)" stroke="#6e521a" stroke-width="2"/>`;
+  s += `<polygon points="${[0,60,120,180,240,300].map(d=>pt(cx,cy,48,d+30).join(',')).join(' ')}" fill="url(#brass)" stroke="#6e521a" stroke-width="2.5" stroke-linejoin="round"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="22" fill="#c9a24a" stroke="#6e521a" stroke-width="2"/><circle cx="${cx}" cy="${cy}" r="15" fill="#b08b3a" stroke="#5a4214" stroke-width="1.5"/>`;
+  if (keyIn) s += `<rect x="${cx-3}" y="${cy-28}" width="6" height="32" fill="#8a6a24"/><path d="M${cx},${cy-28} m-20,-26 a13,13 0 1 1 20,9 a13,13 0 1 1 20,-9 a13,13 0 1 1 -20,-24 a13,13 0 1 1 -20,24 Z" fill="url(#brass)" stroke="#6e521a" stroke-width="2"/><circle cx="${cx}" cy="${cy-72}" r="5" fill="#2a2d2f"/>`;
+  else s += `<rect x="${cx-2.5}" y="${cy-9}" width="5" height="18" rx="1" fill="#3a2e14"/>`;
+  return s + `</g>`;
+}
 function spreadAngles(n){ const sp = n>3 ? 120 : 90; return i => n===1 ? 0 : -sp/2 + sp*i/(n-1); }
 
 /* ---------- component drawings (50 svg units per ½-inch cell) ---------- */
@@ -525,6 +558,24 @@ const DRAW = {
       s += `<text x="${lx}" y="${ly}" ${F} font-weight="700" font-size="16" fill="#f4f2ea" text-anchor="middle" dominant-baseline="central" letter-spacing="1.5" transform="rotate(${la} ${lx} ${ly})">LOCKOUT</text>`; }
     // pistol-grip handle: pointer up toward the legend, grip hanging down
     const pi = Math.round(+it.pos), a = (it.lockout && pi===-2) ? LA : (n && pi>=0) ? ang(clamp(pi,0,n-1)) : 0;
+    if (it.handle==='key'){
+      /* key-lock SB-1: SBM-style escutcheon (octagon recess, position words) with the brass key handle */
+      const P2 = positions(it), pi2 = Math.round(+it.pos);
+      let k = DRAW.sbm({...it, knob:'none', pos:0, flag:undefined});
+      const kcx = 125, kcy = 232, ka = (it.lockout && pi2===-2) ? -90 : pi2===0 ? -45 : pi2===1 ? 45 : 0;
+      return k + keyHandle(kcx, kcy, ka, it.keyIn!==false);
+    }
+    if (false){
+      s += `<g transform="rotate(${a} ${cx} ${cy})">`;
+      s += `<rect x="${cx-11}" y="${cy+20}" width="22" height="236" rx="10" fill="url(#brass)" stroke="#6e521a" stroke-width="1.5"/><rect x="${cx-6}" y="${cy+24}" width="4" height="226" fill="#fff" opacity=".18"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="40" fill="url(#brass)" stroke="#6e521a" stroke-width="2"/>`;
+      s += `<polygon points="${[0,60,120,180,240,300].map(d=>pt(cx,cy,52,d+30).join(',')).join(' ')}" fill="url(#brass)" stroke="#6e521a" stroke-width="2.5" stroke-linejoin="round"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="24" fill="#c9a24a" stroke="#6e521a" stroke-width="2"/><circle cx="${cx}" cy="${cy}" r="16" fill="#b08b3a" stroke="#5a4214" stroke-width="1.5"/>`;
+      if (it.keyIn!==false) s += `<rect x="${cx-3}" y="${cy-30}" width="6" height="34" fill="#8a6a24"/><path d="M${cx},${cy-30} m-22,-28 a14,14 0 1 1 22,10 a14,14 0 1 1 22,-10 a14,14 0 1 1 -22,-26 a14,14 0 1 1 -22,26 Z" fill="url(#brass)" stroke="#6e521a" stroke-width="2"/><circle cx="${cx}" cy="${cy-78}" r="5" fill="#2a2d2f"/>`;
+      else s += `<rect x="${cx-2.5}" y="${cy-9}" width="5" height="18" rx="1" fill="#3a2e14"/>`;
+      s += `</g>`;
+      return s;
+    }
     s += `<g transform="rotate(${a} ${cx} ${cy})">`;
     s += `<path d="M116,246 L119,200 Q125,194 131,200 L134,246 Z" fill="#0c0c0c" stroke="#000"/><rect x="121" y="204" width="8" height="10" fill="${fc}" opacity=".85"/>`;
     s += `<path d="M100,250 Q100,222 125,220 Q150,222 150,250 L156,320 L170,468 Q172,494 148,496 L106,496 Q82,494 84,468 L96,320 Z" fill="url(#grip)" stroke="#000" stroke-width="1.5"/>`;
@@ -637,7 +688,8 @@ const DRAW = {
     s += `<circle cx="${cx}" cy="${cy}" r="172" fill="url(#glass)"/>`;
     return s;
   },
-  sbmb(it){
+  sbmb(it){ return DRAW.sbmbBody({...it, positions:'TRIP,CLOSE', lockout:false, pos: (+it.pos===-2 ? -1 : it.pos)}); },
+  sbmbBody(it){
     /* 250 x 350 units: tapered nameplate, SBM breaker-control plate with target flag, pistol handle */
     const P = positions(it), n = P.length, cx=125, cy=238, W='#ecebe4';
     const ang = i => n===1 ? 0 : n===2 ? (i ? 40 : -40) : -45 + 90*i/(n-1);
@@ -652,19 +704,18 @@ const DRAW = {
     if (lg) s += `<text x="125" y="132" ${F} font-weight="700" font-size="${fit(lg,20,150).toFixed(1)}" fill="${W}" text-anchor="middle" letter-spacing="1">${esc(lg)}</text>`;
     const ph = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#6c6e6f" stroke="#3a3b3c" stroke-width="1.5"/><path d="M${x-6},${y} h12 M${x},${y-6} v12" stroke="#2f3031" stroke-width="2.5"/>`;
     s += ph(42,154)+ph(208,154)+ph(42,298)+ph(208,298);
+    const pi = Math.round(+it.pos), a = pi===0 ? -45 : pi===1 ? 45 : 0;
     P.forEach((p,i)=>{ const a = ang(i), [x,y] = pt(cx,cy,76,a);
       s += `<text x="${x}" y="${y}" ${F} font-weight="700" font-size="${Math.min(22, 70/Math.max(3,p.length)*1.4).toFixed(1)}" fill="${W}" text-anchor="middle" dominant-baseline="central" letter-spacing="1" transform="rotate(${a} ${x} ${y})">${esc(p.toUpperCase())}</text>`; });
     const fc = it.flag==='red' ? '#c9302a' : it.flag==='none' ? '#1c1c1c' : '#2fa35a';
     const wedge = (r1,r2,a0,a1) => { const [ax,ay]=pt(cx,cy,r2,a0),[bx,by]=pt(cx,cy,r2,a1),[c1,d1]=pt(cx,cy,r1,a1),[e1,f1]=pt(cx,cy,r1,a0); return `M${ax},${ay} L${bx},${by} L${c1},${d1} L${e1},${f1} Z`; };
     s += `<path d="${wedge(48,94,-17,17)}" fill="${W}"/><path d="${wedge(53,89,-13,13)}" fill="${fc}"/>`;
     s += `<circle cx="${cx}" cy="${cy}" r="21" fill="#0d0d0d" stroke="${W}" stroke-width="2.5"/>`;
+    s += `<g transform="rotate(${a} ${cx} ${cy})">`
+      + `<rect x="${cx-20}" y="${cy-20}" width="40" height="276" rx="10" fill="url(#grip)" stroke="#000" stroke-width="1.5"/>`
+      + `<rect x="${cx-12}" y="${cy-10}" width="7" height="256" rx="3.5" fill="#fff" opacity=".07"/>`
+      + `<circle cx="${cx}" cy="${cy}" r="12" fill="#1a1a1a" stroke="#000"/></g>`;
     if (it.lockout) s += `<text x="${cx}" y="${cy+84}" ${F} font-weight="700" font-size="16" fill="${W}" text-anchor="middle" dominant-baseline="central" letter-spacing="1.5">LOCKOUT</text>`;
-    const pi = Math.round(+it.pos), off = (it.lockout && pi===-2) ? -90 : (n && pi>=0) ? (n===2 ? (pi ? 45 : -45) : ang(clamp(pi,0,n-1))) : 0, a = -90 + off;
-    s += `<g transform="rotate(${a} ${cx} ${cy})">`;
-    s += `<rect x="${cx-14}" y="${cy-120}" width="28" height="128" rx="9" fill="url(#grip)" stroke="#000" stroke-width="1.5"/>`;
-    s += `<rect x="${cx-8}" y="${cy-112}" width="7" height="104" rx="3.5" fill="#fff" opacity=".07"/>`;
-    s += `<circle cx="${cx}" cy="${cy-104}" r="6" fill="#2b2b2b" stroke="#000" stroke-width="1"/>`;
-    s += `<circle cx="${cx}" cy="${cy}" r="12" fill="#1a1a1a" stroke="#000" stroke-width="1"/></g>`;
     if (it.spring && !it.lockout) s += `<text x="125" y="314" ${F} font-size="11" fill="#7a7a76" text-anchor="middle" letter-spacing="1">SPRING RETURN</text>`;
     return s;
   },
@@ -812,6 +863,28 @@ const DRAW = {
     const {w,h} = dim(it), L = String(it.text||'').split('\n'), z = (+it.lsize||1)/CELL_IN*U, lh = z*1.25;
     return L.map((t,i)=>`<text x="${w*U/2}" y="${(h*U - L.length*lh)/2 + lh*(i+0.5)}" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="${it.bold===false?500:700}" font-size="${z*1.05}" fill="${esc(it.lcolor||'#f4f2ea')}" text-anchor="middle" dominant-baseline="central" letter-spacing="${z*0.06}">${esc(t)}</text>`).join('');
   },
+  crt(it){
+    const {w,h} = dim(it), W = w*U, H = h*U, d = +it.diag||12, sw = d*0.8/CELL_IN*U, sh = d*0.6/CELL_IN*U;
+    const P = {green:['#39ff7a','#06130a'], amber:['#ffb02e','#140c02'], white:['#e8f0ff','#0b0d12']}[it.phos] || ['#39ff7a','#06130a'];
+    const bz = it.bezel==='black' ? ['#232425','#3a3b3d'] : ['#d9d3c2','#b3ab96'];
+    let s = nameplate(W/2-150, 4, 300, 52, it.label, it.tag);
+    const by = 66, bh = H-by-6, sx = (W-sw)/2, sy = by + (bh-sh)/2;
+    s += `<rect x="6" y="${by}" width="${W-12}" height="${bh}" rx="18" fill="${bz[0]}" stroke="${bz[1]}" stroke-width="4"/>`;
+    s += `<rect x="${sx-14}" y="${sy-14}" width="${sw+28}" height="${sh+28}" rx="30" fill="#111"/>`;
+    s += `<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="${sw*0.07}" fill="${P[1]}"/>`;
+    s += displayContent(it, sx+sw*0.06, sy+sh*0.07, sw*0.88, sh*0.86, P[0], true);
+    s += `<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="${sw*0.07}" fill="url(#crtglass)"/>`;
+    s += `<circle cx="${W-34}" cy="${by+bh-26}" r="7" fill="${P[0]}" opacity=".85"/>`;
+    return s;
+  },
+  lcd(it){
+    const {w,h} = dim(it), W = w*U, H = h*U, back = it.lstyle==='blue' ? ['#1d3fb0','#e8f0ff'] : it.lstyle==='black' ? ['#0b0c0d','#ff9b2a'] : ['#a9b79a','#1e2618'];
+    let s = `<rect x="3" y="3" width="${W-6}" height="${H-6}" rx="8" fill="#1d1e20" stroke="#3a3b3d" stroke-width="3"/>`;
+    s += `<rect x="${U*0.7}" y="${U*0.7}" width="${W-U*1.4}" height="${H-U*1.4}" rx="3" fill="${back[0]}"/>`;
+    s += displayContent(it, U*0.95, U*0.9, W-U*1.9, H-U*1.8, back[1], false);
+    s += `<rect x="${U*0.7}" y="${U*0.7}" width="${W-U*1.4}" height="${H-U*1.4}" rx="3" fill="url(#glass)" opacity=".5"/>`;
+    return s;
+  },
   es24(it){
     const P = positions(it), n = P.length, cx=125, cy=236, W='#ecebe4';
     const ang = i => n===1 ? 0 : n===2 ? (i ? 45 : -45) : (i-(n-1)/2)*45;
@@ -898,6 +971,7 @@ const DRAW = {
     if (it.lockout){ const la = LA, [lx,ly] = pt(cx,cy,84,la);
       s += `<text x="${lx}" y="${ly}" ${F} font-weight="700" font-size="16" fill="#f4f2ea" text-anchor="middle" dominant-baseline="central" letter-spacing="1.5" transform="rotate(${la} ${lx} ${ly})">LOCKOUT</text>`; }
     const a = (it.lockout && Math.round(+it.pos)===-2) ? LA : n ? ang(clamp(Math.round(+it.pos)||0,0,n-1)) : 0;
+    if (it.knob==='none') return s;
     s += `<g transform="rotate(${a} ${cx} ${cy})">`;
     if (it.knob==='oval'){
       s += `<rect x="${cx-27}" y="${cy-76}" width="54" height="152" rx="27" fill="#0d0d0d" stroke="#2c2c2c" stroke-width="2"/>`;
@@ -1222,7 +1296,7 @@ const boardBase = p => +p.base > 0 ? +p.base : (p.split!=null ? 42 : Math.max(6,
 const vTopRow = p => p.split!=null ? p.split : p.rows;
 const heightAt = (p, row) => boardBase(p) + (vTopRow(p) - row)*CELL_IN;
 const CONTROLS = new Set(['ml520','aj','sb1','cr104p','sbmk','sbmo','sbmb','es24','es24l','w2']);
-const DISPLAYS = new Set(['ew185','dualvue','db40','edgewise','dx1000']);
+const DISPLAYS = new Set(['crt','lcd','ew185','dualvue','db40','edgewise','dx1000']);
 function applyPreset(kind){
   const p = panel(), P = {bench:{v:96,b:48,base:42,cab:24,bench:24}, vertical:{v:168,b:0,base:6,cab:24,bench:0}, console:{v:28,b:48,base:30,cab:18,bench:24}}[kind]; if (!P) return;
   checkpoint(); ensureRoom();
@@ -1310,6 +1384,8 @@ function dim(x){
   if (it.type==='dclock') return it.fmt==='hm' ? {w:11, h:5} : {w:16, h:5};
   if (it.type==='ltext'){ const L = String(it.text||' ').split('\n'), z = +it.lsize||1, long = Math.max(1,...L.map(l=>l.length));
     return {w: clamp(Math.ceil(long*z*0.66/CELL_IN)+1, 1, 200), h: clamp(Math.ceil(L.length*z*1.25/CELL_IN), 1, 100)}; }
+  if (it.type==='crt'){ const d = +it.diag||12, wi = d*0.8, hi = d*0.6; return {w: Math.round((wi+3)/CELL_IN), h: Math.round((hi+2.5)/CELL_IN)+3}; }
+  if (it.type==='lcd') return {w: clamp(Math.round((+it.lw||6)/CELL_IN)+2,3,120), h: clamp(Math.round((+it.lh||3)/CELL_IN)+2,2,80)};
   if (it.type==='note') return {w: clamp(Math.round(+it.nw)||8,3,60), h: clamp(Math.round(+it.nh)||6,2,60)};
   if (it.type==='ew185') return it.orient==='vertical' ? {w:3, h:8} : {w:8, h:3};
   return {w:t.w, h:t.h};
@@ -1681,8 +1757,8 @@ function renderInspector(){
     if (it.type==='sbmk'||it.type==='sbmo'||it.type==='sbmb'){
       const kn = it.type==='sbmb' ? 'pistol' : it.type==='sbmo' ? 'oval' : 'knurled';
       h += `<div class="row2">${selectField('Handle','knob',kn,[['knurled','Knurled knob'],['oval','Oval handle'],['pistol','Breaker pistol grip']])}${field('Plate legend','legend',it.legend||'')}</div>`;
-      h += it.type==='sbmb' ? `<div class="row2">${field('Left position','p0',positions(it)[0])}${field('Right position','p1',positions(it)[1])}</div>` : field('Positions (comma separated)','positions',it.positions);
-      if (it.type==='sbmb') h += `<div class="row2">${selectField('Handle at','pos',it.pos, [[-1,'Normal'], ...positions(it).map((x,i)=>[i,x]), ...(it.lockout?[[-2,'Lockout']]:[])])}${selectField('Target flag','flag',it.flag||'green',[['green','Green (tripped)'],['red','Red (closed)'],['none','Blank']])}</div>`;
+      if (it.type!=='sbmb') h += field('Positions (comma separated)','positions',it.positions);
+      if (it.type==='sbmb') h += `<div class="row2">${selectField('Handle at','pos',it.pos, [[0,'TRIP'],[-1,'NORMAL'],[1,'CLOSE']])}${selectField('Target flag','flag',it.flag||'green',[['green','Green (tripped)'],['red','Red (closed)'],['none','Blank']])}</div>`;
       else h += selectField('Shown in position','pos',it.pos, [...positions(it).map((x,i)=>[i,x]), ...(it.lockout?[[-2,'Lockout']]:[])]);
     }
     if (it.type==='clock'){
@@ -1724,7 +1800,7 @@ function renderInspector(){
       if (it.type==='es24l') h += `<div class="field"><label>Lamps lit</label><div class="tools">${[['lampA','Amber'],['lampG','Green'],['lampR','Red']].map(([k,t])=>`<label class="readout"><input id="f_${k}" data-k="${k}" type="checkbox"${it[k]?' checked':''}> ${t}</label>`).join('')}</div></div>`;
     }
     if (it.type==='w2') h += `<div class="row2">${selectField('Target flag','flag',it.flag||'green',[['green','Green (tripped)'],['red','Red (closed)'],['none','Blank']])}<div class="field"><label for="f_pullOut">Pull-out</label><label class="readout"><input id="f_pullOut" data-k="pullOut" type="checkbox"${it.pullOut?' checked':''}> Pull-out position</label></div></div>`;
-    if (['sb1','sbmk','sbmo','sbmb','es24l'].includes(it.type)){
+    if (['sb1','sbmk','sbmo','es24l'].includes(it.type)){
       const box = `<div class="field"><label for="f_lockout">Lockout</label><label class="readout"><input id="f_lockout" data-k="lockout" type="checkbox"${it.lockout?' checked':''}> Lockout position</label></div>`;
       h += box;
     }
@@ -1771,9 +1847,10 @@ FW FLOW/LO</pre>
       h += `<div class="row2">${field('Width (cells)','wc',dd.w,'number','min="4" max="120"')}${selectField('Plate','style',it.style||'black',[['black','Black / white letters'],['white','White / black letters'],['red','Red / white letters']])}</div>`;
     }
     if (it.type==='sb1'){
+      h += `<div class="row2">${selectField('Operator','handle',it.handle||'pistol',[['pistol','Pistol grip'],['key','Key lock (brass)']])}${it.handle==='key' ? `<div class="field"><label for="f_keyIn">Key</label><label class="readout"><input id="f_keyIn" data-k="keyIn" type="checkbox"${it.keyIn!==false?' checked':''}> Key in the lock</label></div>` : ''}</div>`;
       h += field('Switch legend (engraved on plate)','legend',it.legend ?? 'BREAKER CONTROL');
       h += `<div class="row2">${field('Left position','p0',positions(it)[0])}${field('Right position','p1',positions(it)[1])}</div>`;
-      h += `<div class="row2">${selectField('Handle','pos',it.pos, [[-1,'Normal (centred)'], ...positions(it).map((x,i)=>[i,x]), ...(it.lockout?[[-2,'Lockout']]:[])])}${selectField('Target flag','flag',it.flag||'green',[['green','Green (tripped)'],['red','Red (closed)'],['none','Blank']])}</div>`;
+      h += `<div class="row2">${selectField('Handle','pos',it.pos, [[-1,'Normal (centred)'], ...positions(it).map((x,i)=>[i,x]), ...(it.lockout?[[-2,'Lockout']]:[])])}${it.handle==='key' ? '' : selectField('Target flag','flag',it.flag||'green',[['green','Green (tripped)'],['red','Red (closed)'],['none','Blank']])}</div>`;
     }
     if (it.type==='cr104p'){
       h += selectField('Operator','op',it.op||'knob',[['knob','Selector knob'],['key','Key lock'],['pb','Pushbutton']]);
@@ -1819,6 +1896,12 @@ FW FLOW/LO</pre>
         h += `<div class="row2">${field('Tag',`ch${i}.tag`,c.tag)}${field('Units',`ch${i}.units`,c.units)}</div>`;
         h += `<div class="row3">${field('Min',`ch${i}.min`,c.min,'number','step="any"')}${field('Max',`ch${i}.max`,c.max,'number','step="any"')}${field('Value',`ch${i}.value`,c.value,'number','step="any"')}</div>`;
       }
+    }
+    if (it.type==='crt' || it.type==='lcd'){
+      if (it.type==='crt') h += `<div class="row3">${selectField('Screen size','diag',it.diag||12,[[9,'9 in'],[12,'12 in'],[14,'14 in'],[19,'19 in']])}${selectField('Phosphor','phos',it.phos||'green',[['green','Green'],['amber','Amber'],['white','White']])}${selectField('Case','bezel',it.bezel||'beige',[['beige','Beige'],['black','Black']])}</div>`;
+      else h += `<div class="row3">${field('Width (in)','lw',it.lw||6,'number','min="1" max="60" step="0.5"')}${field('Height (in)','lh',it.lh||3,'number','min="0.5" max="40" step="0.5"')}${selectField('Look','lstyle',it.lstyle||'gray',[['gray','Gray-green'],['blue','Blue backlit'],['black','Black, orange text']])}</div>`;
+      h += selectField('Shows','screen',it.screen||'text',[['text','My text'],['trend','Trend lines'],['bars','Bar graph']]);
+      if ((it.screen||'text')==='text') h += `<div class="field"><label for="f_lines">Screen text, one line each</label><textarea id="f_lines" data-k="lines" rows="7" spellcheck="false" style="font-family:var(--mono)">${esc(it.lines||'')}</textarea></div>`;
     }
     if (it.type==='ltext'){
       h += `<div class="field"><label for="f_text">Text</label><textarea id="f_text" data-k="text" rows="2">${esc(it.text||'')}</textarea></div>`;
@@ -2150,7 +2233,7 @@ function roomInput(k, raw){
   if (k==='roomD') S.room.d = clamp(Math.round(v),8,200)*12;
   save(); renderRoom(); renderParts();
 }
-const NUMERIC = new Set(['nw','nh','base','out','load','ctrl','min','max','value','channels','cols','rows','pos','split','bandLo','bandHi','acols','arows','wc','w','angle']);
+const NUMERIC = new Set(['diag','lw','lh','nw','nh','base','out','load','ctrl','min','max','value','channels','cols','rows','pos','split','bandLo','bandHi','acols','arows','wc','w','angle']);
 $('insp').addEventListener('click', e=>{
   const si = e.target.closest('[data-showids]'); if (si){ ui.view = 'boards'; ui.tool = null; setSelection(si.dataset.showids.split(',')); renderAll();
     const el = board.querySelector(`.item[data-id="${si.dataset.showids.split(',')[0]}"]`); if (el) el.scrollIntoView({block:'center', inline:'center'}); return; }
@@ -2211,7 +2294,7 @@ $('insp').addEventListener('input', e=>{
   if (k==='arows') v = clamp(Math.round(v),1,8);
   if (k==='wc') v = clamp(Math.round(v),4,120);
   if (k==='knob'){ const was = target.type; target.type = v==='oval' ? 'sbmo' : v==='pistol' ? 'sbmb' : 'sbmk';
-    if (target.type==='sbmb' && was!=='sbmb'){ target.pos = -1; target.flag ||= 'green'; if (!target.legend) target.legend = 'BREAKER CONTROL'; }
+    if (target.type==='sbmb' && was!=='sbmb'){ target.pos = -1; target.positions = 'TRIP,CLOSE'; target.lockout = false; target.flag ||= 'green'; if (!target.legend) target.legend = 'BREAKER CONTROL'; }
     if (was==='sbmb' && target.type!=='sbmb' && (+target.pos)<0) target.pos = 0; }
   target[k] = v;
   if (!sel() && k==='rows' && target.split!=null) target.split = Math.min(target.split, target.rows-3);
@@ -2222,7 +2305,7 @@ $('insp').addEventListener('input', e=>{
 });
 $('insp').addEventListener('change', e=>{
   const k = e.target.dataset.k;
-  if (k==='positions'||k==='cols'||k==='rows'||k==='color'||k==='lit'||k==='channels'||k==='tag'||k==='nw'||k==='nh'||k==='orient'||k==='base'||k==='split'||k==='bandOn'||k==='lockout'||k==='op'||k==='face'||k==='knob'||k==='acols'||k==='arows'||k==='wc') renderInspector();
+  if (k==='positions'||k==='cols'||k==='rows'||k==='color'||k==='lit'||k==='channels'||k==='tag'||k==='diag'||k==='lw'||k==='lh'||k==='screen'||k==='handle'||k==='nw'||k==='nh'||k==='orient'||k==='base'||k==='split'||k==='bandOn'||k==='lockout'||k==='op'||k==='face'||k==='knob'||k==='acols'||k==='arows'||k==='wc') renderInspector();
   if (k==='color'&&!sel()) renderBoard();
   if (selMimic() && (k==='color'||k==='w')) renderInspector();
   if (k==='flag'||k==='pos') renderBoard();
