@@ -63,7 +63,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.danger{color:var(--bad)}
 .btn:disabled{opacity:.4;cursor:default}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.zoom{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:46px;text-align:center;font-variant-numeric:tabular-nums}
+.zoom{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:50px;text-align:center;font-variant-numeric:tabular-nums;background:none;border:0;border-radius:5px;padding:6px 2px;cursor:pointer}
+.zoom:hover{color:var(--fg);background:var(--rack-2)}
 .tabstrip{display:flex;align-items:flex-end;gap:2px;overflow-x:auto;padding-top:8px;margin-bottom:10px;border-bottom:1px solid var(--line);scrollbar-width:thin}
 .tabstrip[hidden]{display:none}
 .btab{display:flex;align-items:center;gap:8px;background:none;border:1px solid transparent;border-bottom:0;border-radius:7px 7px 0 0;padding:7px 14px 8px;cursor:pointer;color:var(--muted);white-space:nowrap;font-size:13px;position:relative;top:1px}
@@ -182,6 +183,20 @@ table.devlist{width:100%;border-collapse:collapse;font-size:13px;min-width:760px
 .shareopt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--rack-2)}
 .shareopt b{display:block;font-size:14px}
 .shareopt span{display:block;font-size:12.5px;color:var(--muted);line-height:1.45;margin-top:2px}
+.sbright{display:flex;gap:14px;align-items:center}
+.field label.readout{text-transform:none;font-family:var(--body);font-size:12.5px;letter-spacing:0;color:var(--fg);display:flex;gap:8px;align-items:center;line-height:1.35}
+.field label.readout input{margin:0;accent-color:var(--accent)}
+.saved{color:var(--good);opacity:.85}
+.saved.bad{color:var(--bad);opacity:1}
+.lockchip{position:absolute;right:-5px;bottom:-5px;z-index:2;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#2a2d2f;color:#e3a43b;font-size:10px;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+.tabedit{background:var(--bg);border:1px solid var(--accent);border-radius:4px;padding:2px 6px;width:180px;color:var(--fg)}
+.ctx{position:fixed;z-index:60;min-width:190px;background:var(--rack-2);border:1px solid var(--line);border-radius:8px;padding:4px;box-shadow:0 12px 32px rgba(0,0,0,.45);display:grid}
+.ctx[hidden]{display:none}
+.ctx button{display:flex;justify-content:space-between;gap:16px;align-items:center;background:none;border:0;border-radius:5px;padding:7px 10px;text-align:left;cursor:pointer;font-size:13px}
+.ctx button:hover,.ctx button:focus-visible{background:var(--rack)}
+.ctx button.danger{color:var(--bad)}
+.ctx kbd{font-family:var(--mono);font-size:11px;color:var(--muted);background:none;border:0}
+.ctxsep{height:1px;background:var(--line);margin:4px 2px}
 .hintbox{padding:2px 12px 8px;font-size:12px;color:var(--muted);line-height:1.5}
 .tiles{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
 .measure{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:8}
@@ -280,7 +295,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
     <div class="spacer"></div>
     <div class="find"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="find" type="search" placeholder="Find tag or nameplate" list="findList" aria-label="Find a device" autocomplete="off"><datalist id="findList"></datalist></div>
     <div class="actions">
-      <div class="tgroup" role="group" aria-label="Zoom"><button class="ibtn" id="zoomOut" aria-label="Zoom out" title="Zoom out (−)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="zoom" id="zoomLbl">150%</span><button class="ibtn" id="zoomIn" aria-label="Zoom in" title="Zoom in (+)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="tgroup" role="group" aria-label="Zoom"><button class="ibtn" id="zoomOut" aria-label="Zoom out" title="Zoom out (−)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><button class="zoom" id="zoomLbl" title="Fit the whole board on screen (F)">150%</button><button class="ibtn" id="zoomIn" aria-label="Zoom in" title="Zoom in (+)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
       <div class="tgroup" role="group" aria-label="History"><button class="ibtn" id="undoBtn" aria-label="Undo" title="Undo (Ctrl+Z)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ibtn" id="redoBtn" aria-label="Redo" title="Redo (Ctrl+Y)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></div>
       <button class="ibtn plain" id="helpBtn" aria-label="Help" title="Help"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.9"/><path d="M12 17.2h.01"/></svg></button>
       <button class="ibtn plain" id="setBtn" aria-label="Settings" title="Settings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
@@ -299,7 +314,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
 
     <section class="canvas">
       <div class="scroller" id="scroller"><div class="board" id="board"></div><div class="room" id="room" hidden></div><div class="list" id="list" hidden></div></div>
-      <div class="statusbar"><span id="status"></span><span id="cursor"></span></div>
+      <div class="statusbar"><span id="status"></span><span class="sbright"><span id="cursor"></span><span id="savedLbl" class="saved" title="Your layout is saved in this browser automatically">Saved in this browser</span></span></div>
     </section>
 
     <aside class="pane" aria-label="Inspector">
@@ -375,6 +390,9 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
         <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Y</kbd></td><td>Undo and redo</td></tr>
         <tr><td><kbd>M</kbd></td><td>Measure tool</td></tr>
         <tr><td><kbd>P</kbd></td><td>Paint tiles</td></tr>
+        <tr><td><kbd>F</kbd> or click the zoom %</td><td>Fit the whole board on screen</td></tr>
+        <tr><td>Right-click a part</td><td>Duplicate, copy, lock, turn or remove it</td></tr>
+        <tr><td>Double-click a board tab</td><td>Rename the board</td></tr>
         <tr><td><kbd>+</kbd> / <kbd>−</kbd> or <kbd>Ctrl</kbd>+wheel</td><td>Zoom in and out</td></tr>
         <tr><td><kbd>R</kbd></td><td>Turn a selected mimic symbol</td></tr>
         <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>Rotate a board in Room view</td></tr>
@@ -395,7 +413,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
 <script>
 (function(){
 const CELL_IN = 0.5, U = 50, BASE_PX = 16;
-const ZOOMS = [1,1.25,1.5,2,2.5,3];
+const ZOOMS = [0.15,0.25,0.4,0.6,0.8,1,1.25,1.5,2,2.5,3];
 const COLORS = {red:'#d4302a',green:'#2c9e4b',amber:'#ee9a1c',white:'#f1eee2',blue:'#2c69cf',yellow:'#e9cf2b',black:'#1b1b1b'};
 const INFO = {
   sb1:'GE SB-1 control switch with a pistol-grip handle. The classic breaker and motor control: turn left to TRIP, right to CLOSE, and it springs back to normal. The window shows a green or red flag for the last operation.',
@@ -1484,12 +1502,14 @@ function load(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (!(s 
   s.panels.forEach(p=>{ (p.items||[]).forEach(migrateItem); if (p.cols===52 && p.rows===30){ p.cols=96; p.rows=60; } if (p.split===undefined) p.split=null; }); return s; } catch(e){ return null; } }
 let saveWarned = false;
 function save(){
-  try { localStorage.setItem(KEY, JSON.stringify(S)); saveWarned = false; }
-  catch(e){ if (!saveWarned){ saveWarned = true; setTimeout(()=>flash('Your browser would not save the latest change (storage full or blocked). Use Export → Layout file to keep a copy.'), 0); } }
+  try { localStorage.setItem(KEY, JSON.stringify(S)); saveWarned = false;
+    const el = document.getElementById('savedLbl'); if (el){ const t = new Date(); el.textContent = `Saved ${t.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})}`; el.classList.remove('bad'); } }
+  catch(e){ const el = document.getElementById('savedLbl'); if (el){ el.textContent = 'Not saved'; el.classList.add('bad'); }
+    if (!saveWarned){ saveWarned = true; setTimeout(()=>flash('Your browser would not save the latest change (storage full or blocked). Use Export → Layout file to keep a copy.'), 0); } }
 }
 
 let S = load() || sample();
-const ui = {tool:null, sel:null, selMimic:null, mdraw:null, mcur:null, zoomI:2, drag:null, ghost:null, confirmDel:false, dl:null};
+const ui = {tool:null, sel:null, selMimic:null, mdraw:null, mcur:null, zoomI:7, drag:null, ghost:null, confirmDel:false, dl:null};
 const undo = [];
 const redo = [];
 function histButtons(){ $('undoBtn').disabled = !undo.length; $('redoBtn').disabled = !redo.length; }
@@ -1640,8 +1660,9 @@ function layoutOK(p, moves){
   for (let i=0;i<list.length;i++) for (let j=i+1;j<list.length;j++) if (overlap(list[i],list[i].d,list[j],list[j].d)) return false;
   return true;
 }
+function lockedIn(ids){ const p = panel(); return [...ids].filter(id=>{ const it = p.items.find(i=>i.id===id); return it && it.locked; }); }
 function applyMoves(moves){
-  const p = panel(); if (!layoutOK(p,moves)){ flash('That would overlap another device, the rail or the board edge.'); return false; }
+  const p = panel(); if (lockedIn(moves.keys()).length){ flash('Locked parts can’t be moved. Unlock them in the inspector first.'); return false; } if (!layoutOK(p,moves)){ flash('That would overlap another device, the rail or the board edge.'); return false; }
   checkpoint(); for (const [id,[x,y]] of moves){ const it = p.items.find(i=>i.id===id); it.x = x; it.y = y; }
   save(); renderBoard(); renderInspector(); return true;
 }
@@ -1664,7 +1685,7 @@ function nextTag(type){
 /* ---------- rendering ---------- */
 function renderTabs(){
   $('tabs').hidden = ui.view==='list';
-  $('tabs').innerHTML = S.panels.map(p=>`<button class="btab" data-p="${p.id}" aria-current="${p.id===S.current}" title="${esc(p.name)} · ${inches(p.cols)} × ${inches(p.rows)} in"><span class="sw" style="background:${paint(p)}"></span>${esc(p.name)}<span class="cnt">${p.items.filter(i=>!isAnnot(i)).length}</span></button>`).join('')
+  $('tabs').innerHTML = S.panels.map(p=>`<button class="btab" data-p="${p.id}" aria-current="${p.id===S.current}" title="${esc(p.name)} · ${inches(p.cols)} × ${inches(p.rows)} in · double-click to rename"><span class="sw" style="background:${paint(p)}"></span>${esc(p.name)}<span class="cnt">${p.items.filter(i=>!isAnnot(i)).length}</span></button>`).join('')
     + `<button class="btab add" id="addBoard" title="Add a board">+ New board</button>`
     + `<div class="tabtool"><button class="btn" id="dupBoardTab" title="Make a copy of this board">Duplicate board</button></div>`;
 }
@@ -1725,7 +1746,7 @@ function renderBoard(){
   if (!p.items.length && !(p.mimics||[]).length && !ui.tool) deco += `<div class="emptyhint"><b>This board is empty</b><span>Pick a part on the left, then click here to place it. A saved section drops in a whole group at once.</span></div>`;
   const showNotes = st.showNotes!==false;
   b.innerHTML = deco + p.items.filter(it=>showNotes || it.type!=='note').map(it=>{ const t=TYPES[it.type], d=dim(it);
-    return `<div class="item${it.id===ui.sel||ui.group.has(it.id)?' sel':''}${fits(p,it,it.x,it.y,it.id)?'':' invalid'}" data-id="${it.id}" title="${esc(it.tag)} · ${esc(t.name)}" style="left:${it.x*c}px;top:${it.y*c}px;width:${d.w*c}px;height:${d.h*c}px">${svgFor(it)}${st.showTags&&it.tag?`<span class="tagchip">${esc(it.tag)}</span>`:''}${isDup(dm,it)?'<span class="dupchip" title="This tag is used more than once">!</span>':''}${it.note&&!isAnnot(it)?`<span class="notechip" title="${esc(it.note)}">✎</span>`:''}</div>`; }).join('');
+    return `<div class="item${it.id===ui.sel||ui.group.has(it.id)?' sel':''}${fits(p,it,it.x,it.y,it.id)?'':' invalid'}" data-id="${it.id}" title="${esc(it.tag)} · ${esc(t.name)}" style="left:${it.x*c}px;top:${it.y*c}px;width:${d.w*c}px;height:${d.h*c}px">${svgFor(it)}${st.showTags&&it.tag?`<span class="tagchip">${esc(it.tag)}</span>`:''}${isDup(dm,it)?'<span class="dupchip" title="This tag is used more than once">!</span>':''}${it.note&&!isAnnot(it)?`<span class="notechip" title="${esc(it.note)}">✎</span>`:''}${it.locked?'<span class="lockchip" title="Locked in place">🔒︎</span>':''}</div>`; }).join('');
   ui.ghost = null;
   renderStatus();
 }
@@ -1812,7 +1833,9 @@ function renderInspector(){
   if (ui.group.size>1){
     const items = selItems(), counts = {}; items.forEach(i=>{ if (isAnnot(i)) return; const n = TYPES[i.type].name; counts[n]=(counts[n]||0)+1; });
     $('inspHead').textContent = 'Selection';
+    const nl = items.filter(i=>i.locked).length;
     let h = `<div><div class="title">${items.length} devices selected</div><div class="sub">${Object.keys(counts).map(k=>`${counts[k]} × ${k}`).join(' · ')}</div></div>`;
+    h += `<div class="tools"><button class="btn" data-lockall="1">Lock all</button><button class="btn" data-lockall="0">Unlock all</button>${nl?`<span class="readout" style="align-self:center">${nl} locked</span>`:''}</div>`;
     h += `<div class="field"><label>Line up</label><div class="tools">${[['l','Lefts'],['c','Centers'],['r','Rights'],['t','Tops'],['m','Middles'],['b','Bottoms']].map(([k,t])=>`<button class="btn" data-align="${k}">${t}</button>`).join('')}</div></div>`;
     h += `<div class="field"><label>Space evenly</label><div class="tools"><button class="btn" data-align="dh">Across</button><button class="btn" data-align="dv">Down</button></div></div>`;
     h += `<div class="tools"><button class="btn" id="dupBtn">Duplicate</button><button class="btn" id="copyBtn">Copy</button><button class="btn danger" id="delBtn">Remove all</button></div>`;
@@ -1986,6 +2009,7 @@ FW FLOW/LO</pre>
       h += `<div class="field"><label for="f_text">Note</label><textarea id="f_text" data-k="text" rows="5">${esc(it.text||'')}</textarea></div>`;
       h += `<div class="row3">${field('Width (cells)','nw',dd.w,'number','min="3" max="60"')}${field('Height (cells)','nh',dd.h,'number','min="2" max="60"')}${selectField('Color','ncolor',it.ncolor||'yellow',[['yellow','Yellow'],['blue','Blue'],['pink','Pink'],['green','Green']])}</div>`;
     } else h += `<div class="field"><label for="f_note">Notes</label><textarea id="f_note" data-k="note" rows="2" placeholder="Anything to remember about this device">${esc(it.note||'')}</textarea></div>`;
+    h += `<div class="field"><label for="f_locked">Position</label><label class="readout"><input id="f_locked" data-k="locked" type="checkbox"${it.locked?' checked':''}> Locked in place (can’t be dragged, nudged or removed)</label></div>`;
     h += `<div class="readout">Position: col ${it.x}, row ${it.y} · ${inches(it.x)} in, ${inches(it.y)} in from top-left</div>`;
     const R = ui.rep || {n:4,dir:'right',gap:1};
     h += `<div class="group" style="margin:0 -12px">Make a row of copies</div><div class="row3">${field('Copies','rep_n',R.n,'number','min="1" max="60"')}${selectField('Direction','rep_dir',R.dir,[['right','Right'],['down','Down'],['left','Left'],['up','Up']])}${field('Gap (cells)','rep_gap',R.gap,'number','min="0" max="40"')}</div>`;
@@ -1997,8 +2021,9 @@ FW FLOW/LO</pre>
     const counts = {}; p.items.forEach(i=>{ if (isAnnot(i)) return; const n = TYPES[i.type].name; counts[n]=(counts[n]||0)+1; });
     const all = S.panels.reduce((n,q)=>n+q.items.length,0);
     let h = field('Board name','name',p.name);
-    h += `<div class="row2">${field('Width (cells)','cols',p.cols,'number','min="8" max="400"')}${field('Height (cells)','rows',p.rows,'number','min="8" max="200"')}</div>`;
-    h += `<div class="readout">${inches(p.cols)} × ${inches(p.rows)} in · one cell is ½ in</div>`;
+    const ftin = c => { const i = c*CELL_IN; return i >= 12 ? `${Math.floor(i/12)} ft ${+(i%12).toFixed(1)} in` : `${i} in`; };
+    h += `<div class="row2">${field('Width (in)','widthIn2',p.cols*CELL_IN,'number','min="4" max="1200" step="0.5"')}${field('Height (in)','heightIn2',p.rows*CELL_IN,'number','min="4" max="240" step="0.5"')}</div>`;
+    h += `<div class="readout">${ftin(p.cols)} wide × ${ftin(p.rows)} tall · up to 100 ft long · one grid square is ½ in</div>`;
     h += selectField('Panel paint','color',p.color, [...Object.entries(BOARD_COLORS).map(([k,v])=>[k,v[0]]), ...(BOARD_COLORS[p.color]?[]:[[p.color,'Custom '+p.color]])]);
     h += `<button class="btn" id="openSettings">Paint &amp; grid settings…</button>`;
     h += `<div class="field"><label for="f_splitOn">Bench break rail</label><label class="readout"><input id="f_splitOn" data-k="splitOn" type="checkbox"${p.split!=null?' checked':''}> Split vertical section from bench board</label></div>`;
@@ -2100,7 +2125,8 @@ function turnSel(d){
   checkpoint(); items.forEach(i=>{ i.rot = (((+i.rot||0)+d)%360+360)%360; }); save(); renderBoard(); renderInspector(); return true;
 }
 function removeMimic(){ const p = panel(); if (!ui.selMimic) return; checkpoint(); p.mimics = p.mimics.filter(m=>m.id!==ui.selMimic); ui.selMimic=null; save(); renderBoard(); renderInspector(); }
-function removeSel(){ const ids = new Set(selIds()); if (!ids.size) return; const p = panel(); checkpoint(); p.items = p.items.filter(i=>!ids.has(i.id)); clearSel(); save(); renderBoard(); renderInspector(); }
+function removeSel(){ const ids = new Set(selIds()); if (!ids.size) return; const p = panel();
+  const lk = lockedIn(ids); if (lk.length){ lk.forEach(id=>ids.delete(id)); if (!ids.size){ flash('Locked parts can’t be removed. Unlock them first.'); return; } flash(`Kept ${lk.length} locked part${lk.length>1?'s':''}`); } checkpoint(); p.items = p.items.filter(i=>!ids.has(i.id)); clearSel(); save(); renderBoard(); renderInspector(); }
 function spotFor(p, rel, tries){
   const ok = (x,y) => rel.every(r=>fits(p, r.it, x+r.dx, y+r.dy));
   for (const [x,y] of tries) if (ok(x,y)) return [x,y];
@@ -2241,6 +2267,7 @@ board.addEventListener('pointerdown', e=>{
     if (e.shiftKey){ const ids = selIds(); setSelection(ids.includes(it.id) ? ids.filter(x=>x!==it.id) : [...ids, it.id]); renderBoard(); renderInspector(); return; }
     if (!selIds().includes(it.id)){ setSelection([it.id]); renderBoard(); renderInspector(); }
     const items = selItems(), [cx,cy] = cellAt(e);
+    if (items.some(i=>i.locked)){ renderInspector(); return; }
     const els = new Map(items.map(i=>[i.id, board.querySelector(`.item[data-id="${i.id}"]`)]));
     ui.drag = {items:items.map(i=>({id:i.id,x:i.x,y:i.y})), els, sx:cx, sy:cy, dx:0, dy:0, b:bbox(items), moved:false, ok:true, clickId:it.id};
     els.forEach(el=>el && el.classList.add('dragging')); board.setPointerCapture(e.pointerId);
@@ -2249,6 +2276,25 @@ board.addEventListener('pointerdown', e=>{
     ui.marq = {x0:cx, y0:cy, x1:cx, y1:cy, el, add:e.shiftKey}; board.setPointerCapture(e.pointerId);
   }
 });
+const ctx = document.createElement('div'); ctx.className = 'ctx'; ctx.hidden = true; ctx.setAttribute('role','menu'); document.body.appendChild(ctx);
+function closeCtx(){ ctx.hidden = true; }
+board.addEventListener('contextmenu', e=>{
+  if (ui.tool) return; const el = e.target.closest('.item'); if (!el) return; e.preventDefault();
+  if (!selIds().includes(el.dataset.id)){ setSelection([el.dataset.id]); renderBoard(); renderInspector(); }
+  const items = selItems(), n = items.length, anyLocked = items.some(i=>i.locked), allSym = items.every(i=>i.type==='msym');
+  ctx.innerHTML = [['dup','Duplicate','Ctrl+D'],['copy','Copy','Ctrl+C'],['lock', anyLocked?'Unlock':'Lock in place',''], ...(allSym?[['turn','Turn 90°','R']]:[]), ...(n>1?[['sec','Save as section…','']]:[]), ['sep'], ['del', n>1?`Remove ${n} parts`:'Remove','Del']]
+    .map(([k,t,kb])=> k==='sep' ? '<div class="ctxsep"></div>' : `<button role="menuitem" data-ctx="${k}" class="${k==='del'?'danger':''}"><span>${t}</span><kbd>${kb||''}</kbd></button>`).join('');
+  ctx.hidden = false; const w = ctx.offsetWidth || 190, h = ctx.offsetHeight || 220;
+  ctx.style.left = Math.min(e.clientX, innerWidth - w - 8) + 'px'; ctx.style.top = Math.min(e.clientY, innerHeight - h - 8) + 'px';
+});
+ctx.addEventListener('click', e=>{
+  const b = e.target.closest('[data-ctx]'); if (!b) return; const k = b.dataset.ctx; closeCtx();
+  if (k==='dup') duplicateSel(); if (k==='copy') copySel(); if (k==='del') removeSel(); if (k==='turn') turnSel(90);
+  if (k==='lock'){ const items = selItems(), on = !items.some(i=>i.locked); checkpoint(); items.forEach(i=>{ i.locked = on; }); save(); renderBoard(); renderInspector(); }
+  if (k==='sec'){ const el = $('secName'); if (el) el.focus(); }
+});
+document.addEventListener('pointerdown', e=>{ if (!ctx.hidden && !e.target.closest('.ctx')) closeCtx(); });
+window.addEventListener('blur', closeCtx);
 board.addEventListener('dblclick', ()=>{ if (ui.tool==='mimic' && ui.mdraw) finishMimic(); });
 board.addEventListener('pointerup', e=>{
   if (ui.tool==='paint' && ui.painting){ ui.painting = false; save(); renderInspector(); return; }
@@ -2298,7 +2344,7 @@ function roomInput(k, raw){
   const v = parseFloat(raw); if (!isFinite(v)) return; const p = panel(), r = p.room;
   if (k==='widthIn' || k==='heightIn'){ const key = k==='widthIn' ? 'cols' : 'rows';
     const need = Math.max(8, ...p.items.map(i=> key==='cols' ? i.x+dim(i).w : i.y+dim(i).h), key==='rows' && p.split!=null ? p.split+3 : 0);
-    p[key] = clamp(Math.round(v*2), need, key==='cols' ? 400 : 200); }
+    p[key] = clamp(Math.round(v*2), need, key==='cols' ? 2400 : 480); }
   if (k==='r_cab') r.cab = clamp(v,0,120);
   if (k==='r_bench') r.bench = clamp(v,0,120);
   if (k==='splitIn' && p.split!=null) p.split = clamp(Math.round(v*2), 2, p.rows-3);
@@ -2344,6 +2390,12 @@ $('insp').addEventListener('input', e=>{
   if (k.startsWith('rep_')){ ui.rep ||= {n:4,dir:'right',gap:1}; const f = k.slice(4); ui.rep[f] = f==='dir' ? v : +v;
     const rb = $('repBtn'); if (rb) rb.textContent = `Make ${ui.rep.n} cop${+ui.rep.n===1?'y':'ies'}`; return; }
   if (k==='handle' && sel() && sel().type==='sb1'){ const it = sel(); it.handle = v; const n = positions(it).length; if (+it.pos >= n) it.pos = -1; save(); renderBoard(); renderInspector(); return; }
+  if ((k==='widthIn2' || k==='heightIn2') && !sel()){
+    const p = panel(), key = k==='widthIn2' ? 'cols' : 'rows', ax = key==='cols' ? 0 : 1, n = parseFloat(v); if (!isFinite(n)) return;
+    const need = Math.max(8, ...p.items.filter(i=>!isAnnot(i)).map(i=> ax===0 ? i.x+dim(i).w : i.y+dim(i).h),
+      ...(p.mimics||[]).flatMap(m=>m.pts.map(q=>q[ax])), ...Object.keys(p.tiles||{}).map(t=>+t.split(',')[ax]+1), key==='rows' && p.split!=null ? p.split+3 : 0);
+    p[key] = clamp(Math.round(n/CELL_IN), need, key==='cols' ? 2400 : 480); save(); renderBoard(); renderTabs(); return;
+  }
   if (k==='bold' && sel()){ sel().bold = v==='b'; save(); renderBoard(); return; }
   if (k==='lsize' && sel()){ sel().lsize = +v; save(); renderBoard(); renderInspector(); return; }
   if (k==='text' && sel() && sel().type==='ltext'){ sel().text = v; save(); renderBoard(); return; }
@@ -2365,7 +2417,7 @@ $('insp').addEventListener('input', e=>{
     const p = panel(), ax = k==='cols' ? 0 : 1;
     const need = Math.max(8, ...p.items.filter(i=>!isAnnot(i)).map(i=> ax===0 ? i.x+dim(i).w : i.y+dim(i).h),
       ...(p.mimics||[]).flatMap(m=>m.pts.map(q=>q[ax])), ...Object.keys(p.tiles||{}).map(t=>+t.split(',')[ax]+1));
-    v = clamp(Math.round(v), need, k==='cols'?400:200);
+    v = clamp(Math.round(v), need, k==='cols'?2400:480);
   }
   if (k==='channels') v = clamp(Math.round(v),1,4);
   if (k==='split') v = clamp(Math.round(v),2,panel().rows-3);
@@ -2384,7 +2436,7 @@ $('insp').addEventListener('input', e=>{
 });
 $('insp').addEventListener('change', e=>{
   const k = e.target.dataset.k;
-  if (k==='positions'||k==='cols'||k==='rows'||k==='color'||k==='lit'||k==='channels'||k==='tag'||k==='diag'||k==='lw'||k==='lh'||k==='screen'||k==='handle'||k==='nw'||k==='nh'||k==='orient'||k==='base'||k==='split'||k==='bandOn'||k==='lockout'||k==='op'||k==='face'||k==='knob'||k==='acols'||k==='arows'||k==='wc') renderInspector();
+  if (k==='positions'||k==='cols'||k==='rows'||k==='color'||k==='lit'||k==='channels'||k==='tag'||k==='locked'||k==='widthIn2'||k==='heightIn2'||k==='diag'||k==='lw'||k==='lh'||k==='screen'||k==='handle'||k==='nw'||k==='nh'||k==='orient'||k==='base'||k==='split'||k==='bandOn'||k==='lockout'||k==='op'||k==='face'||k==='knob'||k==='acols'||k==='arows'||k==='wc') renderInspector();
   if (k==='color'&&!sel()) renderBoard();
   if (selMimic() && (k==='color'||k==='w')) renderInspector();
   if (k==='flag'||k==='pos') renderBoard();
@@ -2393,6 +2445,7 @@ $('insp').addEventListener('click', e=>{
   if (e.target.id==='delBtn') removeSel();
   if (e.target.id==='delMimic') removeMimic();
   if (e.target.id==='repBtn') repeatSel();
+  if (e.target.dataset.lockall){ checkpoint(); selItems().forEach(i=>{ i.locked = e.target.dataset.lockall==='1'; }); save(); renderBoard(); renderInspector(); }
   const tb = e.target.closest('[data-tile]'); if (tb){ SET().tileColor = tb.dataset.tile; ui.paintErase = false; save(); renderInspector(); }
   if (e.target.id==='clearTiles'){ if (!ui.confirmTiles){ ui.confirmTiles = true; renderInspector(); setTimeout(()=>{ ui.confirmTiles = false; if (ui.tool==='paint') renderInspector(); }, 3000); return; }
     ui.confirmTiles = false; checkpoint(); panel().tiles = {}; save(); renderBoard(); renderInspector(); }
@@ -2430,7 +2483,15 @@ $('parts').addEventListener('change', e=>{
 });
 $('vList').onclick = ()=>{ if (ui.mdraw) finishMimic(); ui.tool = null; ui.selMimic = null; ui.view = 'list'; renderAll(); };
 $('vRoom').onclick = ()=>{ if (ui.mdraw) finishMimic(); ui.tool = null; clearSel(); ui.selMimic = null; ui.view = 'room'; ensureRoom(); renderAll(); };
+$('tabs').addEventListener('dblclick', e=>{
+  const b = e.target.closest('.btab[data-p]'); if (!b) return; const p = S.panels.find(q=>q.id===b.dataset.p); if (!p) return;
+  b.innerHTML = `<input class="tabedit" value="${esc(p.name)}" aria-label="Board name">`; const inp = b.querySelector('input'); inp.focus(); inp.select();
+  const done = ok=>{ if (ok && inp.value.trim() && inp.value.trim()!==p.name){ checkpoint(); p.name = inp.value.trim(); save(); } renderTabs(); if (!sel() && ui.view!=='list') renderInspector(); };
+  inp.addEventListener('keydown', ev=>{ ev.stopPropagation(); if (ev.key==='Enter') done(true); if (ev.key==='Escape') done(false); });
+  inp.addEventListener('blur', ()=>done(true));
+});
 $('tabs').addEventListener('click', e=>{
+  if (e.target.classList.contains('tabedit')) return;
   if (e.target.closest('#dupBoardTab')){ duplicateBoard(); return; }
   const b = e.target.closest('.btab'); if (!b) return;
   if (b.id==='addBoard'){
@@ -2445,6 +2506,13 @@ function setZoom(i, cx, cy){
   ui.zoomI = i; renderAll(); sc.scrollLeft = ox*f - px; sc.scrollTop = oy*f - py;
 }
 $('zoomIn').onclick = ()=>setZoom(ui.zoomI+1);
+function zoomFit(){
+  if (ui.view==='list') return; const sc = $('scroller'), r = sc.getBoundingClientRect(), p = panel();
+  const wCells = ui.view==='room' ? (S.room.w+28)*2.4/BASE_PX : p.cols, hCells = ui.view==='room' ? (S.room.d+28)*2.4/BASE_PX : p.rows;
+  let i = 0; for (let k=0;k<ZOOMS.length;k++){ if (wCells*BASE_PX*ZOOMS[k] <= r.width-56 && hCells*BASE_PX*ZOOMS[k] <= r.height-56) i = k; }
+  ui.zoomI = i; renderAll(); sc.scrollLeft = 0; sc.scrollTop = 0; flash(`Zoomed to fit · ${Math.round(ZOOMS[i]*100)}%`, true);
+}
+$('zoomLbl').onclick = zoomFit;
 $('zoomOut').onclick = ()=>setZoom(ui.zoomI-1);
 $('scroller').addEventListener('wheel', e=>{
   if (!(e.ctrlKey || e.metaKey) || ui.view==='list') return; e.preventDefault();
@@ -2455,6 +2523,7 @@ $('redoBtn').onclick = doRedo;
 
 document.addEventListener('keydown', e=>{
   const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||'');
+  if (e.key==='Escape' && !ctx.hidden){ closeCtx(); return; }
   if (e.key==='Escape'){
     if (!$('modal').hidden){ closeModal(); return; }
     if (!$('setModal').hidden){ $('setModal').hidden = true; return; }
@@ -2496,6 +2565,7 @@ document.addEventListener('keydown', e=>{
   if (mod && key==='a'){ e.preventDefault(); setSelection(panel().items.map(i=>i.id)); renderBoard(); renderInspector(); return; }
   if (!mod && (e.key==='+' || e.key==='=')){ e.preventDefault(); setZoom(ui.zoomI+1); return; }
   if (!mod && (e.key==='-' || e.key==='_')){ e.preventDefault(); setZoom(ui.zoomI-1); return; }
+  if (!mod && key==='f'){ e.preventDefault(); zoomFit(); return; }
   if (!mod && key==='p'){ e.preventDefault(); setTool('paint'); return; }
   if (!mod && key==='m'){ e.preventDefault(); setTool('measure'); return; }
   if (!mod && key==='r' && selIds().length){ if (turnSel(e.shiftKey ? -90 : 90)) e.preventDefault(); return; }
@@ -2666,7 +2736,7 @@ function boardSVGInner(p, pc){
   return s + '</svg>';
 }
 async function boardImage(p){
-  const pc = Math.max(6, Math.min(36, Math.floor(4200/Math.max(p.cols,p.rows))));
+  const pc = Math.max(2, Math.min(36, Math.floor(6000/Math.max(p.cols,p.rows))));
   return svgImage(boardSVG(p,pc), p.cols*pc, p.rows*pc);
 }
 async function roomImage(){
