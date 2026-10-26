@@ -33,28 +33,56 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px}
 *{box-sizing:border-box}
 button,input,select,textarea{font:inherit;color:inherit}
-.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px}
-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
-.brand{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;line-height:1}
-.brand small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.04em;color:var(--muted);text-transform:none;margin-top:3px}
-.tabs{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0}
-.tab{background:var(--rack);border:1px solid var(--line);border-radius:4px;padding:5px 10px;cursor:pointer;font-family:var(--display);font-size:15px;letter-spacing:.04em;text-transform:uppercase}
-.tab[aria-current="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
-.tab.add{color:var(--muted);border-style:dashed}
+.app{height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 12px}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:.05em;text-transform:uppercase;line-height:1}
+.brand .logo svg{width:30px;height:30px;display:block}
+.brand small{display:block;font-family:var(--body);font-weight:400;font-size:11.5px;letter-spacing:.01em;color:var(--muted);text-transform:none;margin-top:4px}
+.spacer{flex:1}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.viewseg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+.segbtn{display:flex;align-items:center;gap:6px;background:none;border:0;border-radius:6px;padding:6px 12px;cursor:pointer;color:var(--muted);font-weight:500;font-size:13px}
+.segbtn:hover{color:var(--fg)}
+.segbtn[aria-current="true"]{background:var(--rack-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.find{position:relative;display:flex;align-items:center}
+.find .ico{position:absolute;left:9px;color:var(--muted);pointer-events:none}
+.find input{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 10px 6px 30px;width:220px;max-width:100%}
+.find input:focus{border-color:var(--accent);outline:none}
 .actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.btn{background:var(--rack-2);border:1px solid var(--line);border-radius:4px;padding:5px 10px;cursor:pointer}
+.tgroup{display:flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:2px}
+.ibtn{display:grid;place-items:center;width:30px;height:30px;background:none;border:0;border-radius:5px;cursor:pointer;color:var(--fg)}
+.ibtn:hover{background:var(--rack-2)}
+.ibtn.plain{border:1px solid transparent}
+.ibtn:disabled{opacity:.35;cursor:default;background:none}
+.divider{width:1px;height:22px;background:var(--line);margin:0 2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--rack-2);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.primary:hover{filter:brightness(1.07)}
 .btn.danger{color:var(--bad)}
 .btn:disabled{opacity:.4;cursor:default}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.zoom{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:44px;text-align:center}
+.zoom{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:46px;text-align:center;font-variant-numeric:tabular-nums}
+.tabstrip{display:flex;align-items:flex-end;gap:2px;overflow-x:auto;padding-top:8px;margin-bottom:10px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.tabstrip[hidden]{display:none}
+.btab{display:flex;align-items:center;gap:8px;background:none;border:1px solid transparent;border-bottom:0;border-radius:7px 7px 0 0;padding:7px 14px 8px;cursor:pointer;color:var(--muted);white-space:nowrap;font-size:13px;position:relative;top:1px}
+.btab:hover{color:var(--fg);background:var(--rack)}
+.btab[aria-current="true"]{color:var(--fg);background:var(--rack);border-color:var(--line);box-shadow:inset 0 2px 0 var(--accent)}
+.btab .sw{width:10px;height:10px;border-radius:2px;border:1px solid rgba(0,0,0,.35);flex:none}
+.btab .cnt{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--bg);border-radius:9px;padding:0 6px}
+.btab.add{color:var(--muted);font-weight:500}
+.btab.add:hover{color:var(--accent)}
+#insp .viewseg{flex-wrap:wrap}
+#insp .viewseg .segbtn{flex:1 1 auto;justify-content:center;padding:6px 8px;font-size:12px}
+.tabtool{margin-left:auto;display:flex;gap:4px;padding-bottom:4px}
+.tabtool .btn{padding:4px 10px;font-size:12px}
+@media (max-width:760px){ .segbtn span,.btn span{display:none} .find input{width:150px} .brand small{display:none} }
 
 .main{display:grid;grid-template-columns:230px minmax(0,1fr) 280px;gap:10px;min-height:0}
-.pane{background:var(--rack);border:1px solid var(--line);border-radius:6px;min-height:0;overflow:auto}
-.pane h2{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0;padding:12px 12px 6px}
-.group{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px 4px;border-top:1px solid var(--line);margin-top:6px}
+.pane{background:var(--rack);border:1px solid var(--line);border-radius:8px;min-height:0;overflow:auto}
+.pane h2{position:sticky;top:0;z-index:2;background:var(--rack);font-family:var(--body);font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0;padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+.group{font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 12px 6px;margin-top:2px}
 .part{display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px;align-items:center;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:5px;padding:6px 8px;cursor:pointer}
 .part:hover{background:var(--rack-2)}
 .part[aria-pressed="true"]{border-color:var(--accent);background:var(--rack-2)}
@@ -65,7 +93,7 @@ header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
 .part i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .parts{padding:0 4px 8px}
 
-.canvas{display:grid;grid-template-rows:minmax(0,1fr) auto;min-height:0;background:var(--rack);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.canvas{display:grid;grid-template-rows:minmax(0,1fr) auto;min-height:0;background:var(--rack);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .scroller{overflow:auto;min-height:0;padding:24px;background:
   radial-gradient(circle at 1px 1px,#2a2f31 1px,transparent 1.5px) 0 0/14px 14px, #101213}
 .board{position:relative;border-radius:2px;box-shadow:0 0 0 6px #2a2d2e,0 0 0 7px #3d4244,0 14px 40px rgba(0,0,0,.55);touch-action:none;user-select:none}
@@ -163,7 +191,6 @@ table.devlist{width:100%;border-collapse:collapse;font-size:13px;min-width:760px
 .marquee{position:absolute;border:1.5px dashed var(--accent);background:rgba(227,164,59,.12);pointer-events:none;z-index:7}
 .tagchip{position:absolute;left:2px;top:2px;font:600 10px/1.3 var(--mono);background:rgba(18,20,21,.85);color:#fff;padding:0 4px;border-radius:2px;pointer-events:none;white-space:nowrap}
 .tools{display:flex;flex-wrap:wrap;gap:6px}
-.find input{background:var(--rack);border:1px solid var(--line);border-radius:4px;padding:5px 10px;width:210px;max-width:100%}
 .ghost{position:absolute;pointer-events:none;opacity:.6;outline:2px dashed var(--good);outline-offset:1px}
 .ghost.invalid{outline-color:var(--bad);opacity:.45}
 .ghost svg{width:100%;height:100%;display:block}
@@ -243,23 +270,26 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
 </svg>
 
 <div class="app">
-  <header>
-    <div class="brand">Control Board Layout<small>½-inch grid · GE / Yokogawa hardware</small></div>
-    <div class="seg" role="group" aria-label="View"><button class="tab" id="vBoards" aria-current="true">Boards</button><button class="tab" id="vRoom" aria-current="false">Room</button><button class="tab" id="vList" aria-current="false">Device list</button></div>
-    <nav class="tabs" id="tabs" aria-label="Boards"></nav>
-    <div class="find"><input id="find" type="search" placeholder="Find tag or nameplate" list="findList" aria-label="Find a device" autocomplete="off"><datalist id="findList"></datalist></div>
+  <header class="topbar">
+    <div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="6" fill="var(--accent)"/><rect x="7" y="7" width="8" height="12" rx="1.5" fill="var(--accent-ink)"/><path d="M11 13l-1.6 8.5h3.2Z" fill="var(--accent-ink)"/><circle cx="22" cy="12" r="5" fill="none" stroke="var(--accent-ink)" stroke-width="2"/><path d="M22 12l3-2.5" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"/><path d="M6 25h20" stroke="var(--accent-ink)" stroke-width="2.4"/></svg></span><span>Control Board Layout<small>Control room design · ½-inch grid</small></span></div>
+    <div class="viewseg" role="group" aria-label="View">
+      <button class="segbtn" id="vBoards" aria-current="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/></svg><span>Boards</span></button>
+      <button class="segbtn" id="vRoom" aria-current="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12"/><path d="M8 21v-7h8v7"/></svg><span>Room</span></button>
+      <button class="segbtn" id="vList" aria-current="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Device list</span></button>
+    </div>
+    <div class="spacer"></div>
+    <div class="find"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="find" type="search" placeholder="Find tag or nameplate" list="findList" aria-label="Find a device" autocomplete="off"><datalist id="findList"></datalist></div>
     <div class="actions">
-      <button class="btn" id="zoomOut" aria-label="Zoom out">−</button>
-      <span class="zoom" id="zoomLbl">150%</span>
-      <button class="btn" id="zoomIn" aria-label="Zoom in">+</button>
-      <button class="btn" id="undoBtn" title="Undo (Ctrl+Z)">↶ Undo</button>
-      <button class="btn" id="redoBtn" title="Redo (Ctrl+Y)">↷ Redo</button>
-      <button class="btn" id="helpBtn">Help</button>
-      <button class="btn" id="setBtn">Settings</button>
-      <button class="btn" id="importBtn" title="Open a layout file from a friend or a backup">Import</button>
-      <button class="btn primary" id="shareBtn" title="Save or share as a PDF, viewer page, layout file or picture">Export</button>
+      <div class="tgroup" role="group" aria-label="Zoom"><button class="ibtn" id="zoomOut" aria-label="Zoom out" title="Zoom out (−)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="zoom" id="zoomLbl">150%</span><button class="ibtn" id="zoomIn" aria-label="Zoom in" title="Zoom in (+)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="tgroup" role="group" aria-label="History"><button class="ibtn" id="undoBtn" aria-label="Undo" title="Undo (Ctrl+Z)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ibtn" id="redoBtn" aria-label="Redo" title="Redo (Ctrl+Y)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></div>
+      <button class="ibtn plain" id="helpBtn" aria-label="Help" title="Help"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.9"/><path d="M12 17.2h.01"/></svg></button>
+      <button class="ibtn plain" id="setBtn" aria-label="Settings" title="Settings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
+      <span class="divider" aria-hidden="true"></span>
+      <button class="btn" id="importBtn" title="Open a layout file from a friend or a backup"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span>Import</span></button>
+      <button class="btn primary" id="shareBtn" title="PDF, viewer page, spreadsheet, layout file or picture"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg><span>Export</span></button>
     </div>
   </header>
+  <nav class="tabstrip" id="tabs" aria-label="Boards"></nav>
 
   <div class="main">
     <aside class="pane" aria-label="Parts">
@@ -309,6 +339,11 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
         <li>With a group selected you can line them up, space them evenly, duplicate, copy, or save them as a <b>section</b> to reuse on other boards.</li>
         <li>With one part selected, <b>Make a row of copies</b> fills a row of switches or lights in one step.</li>
       </ul></section>
+      <section><h4>Paint, lettering and displays</h4><ul>
+        <li><b>Paint tiles</b> (or <kbd>P</kbd>) colors single ½ in grid tiles for zones and bands. <kbd>Alt</kbd>-drag erases.</li>
+        <li><b>Lettering</b> writes text straight onto the tiles, any size and color. It never blocks other parts.</li>
+        <li><b>CRT</b> and <b>LCD</b> displays show your own lines of text, trend lines or a bar graph.</li>
+      </ul></section>
       <section><h4>Measuring</h4><ul>
         <li>Pick <b>Measure</b> at the top of the parts list, or press <kbd>M</kbd>, then drag between two points. The label shows the distance in feet and inches, plus the across and down distances.</li>
         <li>Hold <kbd>Shift</kbd> to keep it straight, or <kbd>Alt</kbd> to measure to ⅛ in without snapping to the grid.</li>
@@ -339,6 +374,8 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid
         <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Select everything on the board</td></tr>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Y</kbd></td><td>Undo and redo</td></tr>
         <tr><td><kbd>M</kbd></td><td>Measure tool</td></tr>
+        <tr><td><kbd>P</kbd></td><td>Paint tiles</td></tr>
+        <tr><td><kbd>+</kbd> / <kbd>−</kbd> or <kbd>Ctrl</kbd>+wheel</td><td>Zoom in and out</td></tr>
         <tr><td><kbd>R</kbd></td><td>Turn a selected mimic symbol</td></tr>
         <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>Rotate a board in Room view</td></tr>
       </tbody></table></section>
@@ -1311,7 +1348,7 @@ function applyPreset(kind){
   const minY = Math.min(0, ...p.items.map(i=>i.y), ...(p.mimics||[]).flatMap(m=>m.pts.map(q=>q[1])));
   if (minY<0){ p.items.forEach(i=>i.y -= minY); (p.mimics||[]).forEach(m=>m.pts.forEach(q=>q[1] -= minY)); }
   const need = Math.max(0, ...p.items.map(i=>i.y+dim(i).h));
-  p.split = newSplit; p.rows = Math.max(P.b ? P.v+1+P.b : P.v, need); p.base = P.base; p.room.cab = P.cab; p.room.bench = P.bench;
+  p.split = newSplit; p.rows = Math.max(P.b ? P.v+1+P.b : P.v, need); p.base = P.base; p.room.cab = P.cab; p.room.bench = P.bench; p.kind = kind;
   save(); renderAll(); const bad = p.items.filter(i=>!fits(p,i,i.x,i.y,i.id)).length;
   flash(bad ? `Resized. ${bad} part${bad>1?'s':''} now overlap the rail or each other — see Design check.` : `Resized to a real ${kind==='bench'?'benchboard':kind==='vertical'?'vertical panel':'console'}.`, !bad);
 }
@@ -1324,7 +1361,7 @@ function boardChecks(p){
     const d = dim(it);
     if (!fits(p,it,it.x,it.y,it.id)) out.push({lvl:'bad', ids:[it.id], msg:`${tagOf(it)} overlaps another device, the rail or the board edge.`});
     if (isDup(dm,it)) out.push({lvl:'bad', ids:[it.id], msg:`${tagOf(it)} uses a tag that another device also has.`});
-    if (!['msym','sema','header','annun','ew185','clock','dclock'].includes(it.type) && !String(it.label||'').trim()) out.push({lvl:'info', ids:[it.id], msg:`${tagOf(it)} has no nameplate text.`});
+    if (!['msym','sema','header','annun','ew185','clock','dclock','lcd','crt'].includes(it.type) && !String(it.label||'').trim()) out.push({lvl:'info', ids:[it.id], msg:`${tagOf(it)} has no nameplate text.`});
     if (p.split!=null && it.y > p.split) return;
     const top = heightAt(p, it.y), bot = heightAt(p, it.y+d.h), mid = (top+bot)/2;
     if (CONTROLS.has(it.type) && mid > 70) out.push({lvl:'warn', ids:[it.id], msg:`${tagOf(it)} is about ${Math.round(mid)} in above the floor. Controls above about 70 in are hard for a standing operator to reach.`});
@@ -1402,7 +1439,7 @@ const svgFor = it => { const t = dim(it); return `<svg viewBox="0 0 ${t.w*U} ${t
 /* ---------- state ---------- */
 const KEY = 'control-board-layout-v1';
 function sample(){ const s0 = sampleRaw(), p = s0.panels[0], dy = 75;
-  p.items.forEach(i=>{ i.y += dy; if (i.type==='annun') i.y = 4; if (i.type==='header') i.y = 72; });
+  p.items.forEach(i=>{ i.y += dy; if (i.type==='annun'){ i.x = 2; i.y = 52; } if (i.type==='header') i.y = 72; });
   p.mimics.forEach(m=>m.pts.forEach(q=>q[1]+=dy)); p.rows = 145; p.split = 96; p.base = 42; return s0; }
 function sampleRaw(){
   const id = uid(), mk = (type,x,y,extra) => Object.assign({id:uid(),type,x,y,tag:'',...structuredClone(TYPES[type].d)}, extra);
@@ -1434,7 +1471,7 @@ function sampleRaw(){
     mk('msym',29,22,{tag:'MS-004',shape:'valve',color:'feed',filled:false})
   ];
   return {version:1, current:id, panels:[{id, name:'Example — Feedwater', cols:96, rows:60, split:21, color:'seafoam', items,
-    mimics:[{id:uid(),pts:[[1,23],[44,23]],color:'feed',w:0.75},{id:uid(),pts:[[44,23],[44,20],[47,20]],color:'feed',w:0.75}]}]};
+    mimics:[{id:uid(),pts:[[1,23],[44,23]],color:'feed',w:0.75},{id:uid(),pts:[[44,23],[44,26],[47,26]],color:'feed',w:0.75}]}]};
 }
 function migrateItem(i){
   if (typeof i.lockout==='string') i.lockout = i.lockout!=='none';
@@ -1445,7 +1482,11 @@ function migrateItem(i){
 }
 function load(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (!(s && s.panels && s.panels.length)) return null;
   s.panels.forEach(p=>{ (p.items||[]).forEach(migrateItem); if (p.cols===52 && p.rows===30){ p.cols=96; p.rows=60; } if (p.split===undefined) p.split=null; }); return s; } catch(e){ return null; } }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+let saveWarned = false;
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(S)); saveWarned = false; }
+  catch(e){ if (!saveWarned){ saveWarned = true; setTimeout(()=>flash('Your browser would not save the latest change (storage full or blocked). Use Export → Layout file to keep a copy.'), 0); } }
+}
 
 let S = load() || sample();
 const ui = {tool:null, sel:null, selMimic:null, mdraw:null, mcur:null, zoomI:2, drag:null, ghost:null, confirmDel:false, dl:null};
@@ -1526,7 +1567,7 @@ function boardGlyph(p, selected){
   if (bench>0 && cab>0) g += `<line x1="0" y1="${-bench}" x2="${W}" y2="${-bench}" stroke="#1d1f20" stroke-width=".6" stroke-dasharray="2 1.5"/>`;
   g += `<line x1="0" y1="0" x2="${W}" y2="0" stroke="#1d1f20" stroke-width="2"/>`;
   g += `<path d="M${W/2-5},9 L${W/2},4 L${W/2+5},9" fill="none" stroke="#1d1f20" stroke-width="1.2"/>`;
-  const fs = Math.max(3, Math.min(9, W/(Math.max(4,p.name.length)*0.55)));
+  const fs = Math.max(2.5, Math.min(9, (W-4)/(Math.max(4,p.name.length)*0.62)));
   g += `<text x="${W/2}" y="${-D/2}" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="700" font-size="${fs.toFixed(2)}" fill="#111" text-anchor="middle" dominant-baseline="central">${esc(p.name.toUpperCase())}</text>`;
   g += `<text x="${W/2}" y="${(-D/2+fs*0.95).toFixed(2)}" font-family="IBM Plex Mono, Courier New, monospace" font-size="${(fs*0.55).toFixed(2)}" fill="#222" text-anchor="middle" dominant-baseline="central">${inches(p.cols)} × ${+D.toFixed(1)} in</text>`;
   if (selected) g += `<rect x="-2.5" y="${-D-2.5}" width="${W+5}" height="${D+5}" fill="none" stroke="#e3a43b" stroke-width="1.8" stroke-dasharray="4 2"/>`;
@@ -1557,10 +1598,32 @@ function arrange(mode){
   ps.forEach(p=>{ p.room.x = Math.round(p.room.x+dx); p.room.y = Math.round(p.room.y+dy); });
   save(); renderAll();
 }
-function addBoard(){
-  checkpoint(); const id = uid();
-  S.panels.push({id, name:`Board ${S.panels.length+1}`, cols:96, rows:145, split:96, base:42, color:panel().color, items:[], mimics:[]});
-  S.current = id; clearSel(); ensureRoom(); panel().room.bench = 24; save(); renderAll();
+const KINDS = {bench:{v:96,b:48,base:42,cab:24,bench:24,label:'Benchboard'}, vertical:{v:168,b:0,base:6,cab:24,bench:0,label:'Vertical panel'}, console:{v:28,b:48,base:30,cab:18,bench:24,label:'Sit-down console'}};
+const boardKind = p => p.kind || (p.split==null ? 'vertical' : 'bench');
+function addBoard(kind){
+  kind = KINDS[kind] ? kind : 'bench'; const K = KINDS[kind];
+  checkpoint(); const id = uid(), n = S.panels.filter(q=>boardKind(q)===kind).length + 1;
+  S.panels.push({id, kind, name: kind==='bench' ? `Board ${S.panels.length+1}` : `${K.label} ${n}`, cols:96, rows: K.b ? K.v+1+K.b : K.v, split: K.b ? K.v : null, base:K.base, color:panel().color, items:[], mimics:[]});
+  S.current = id; clearSel(); ensureRoom(); Object.assign(panel().room, {cab:K.cab, bench:K.bench}); save(); renderAll();
+  flash(`Added a ${K.label.toLowerCase()}`, true);
+}
+function duplicateBoard(){
+  const src = panel(); checkpoint(); ensureRoom();
+  const p = structuredClone(src); p.id = uid();
+  const base = src.name.replace(/ \(copy( \d+)?\)$/, ''); let k = 1, name = `${base} (copy)`;
+  while (S.panels.some(q=>q.name===name)) name = `${base} (copy ${++k})`;
+  p.name = name;
+  p.items.forEach(i=>{ i.id = uid(); });
+  p.items.forEach(i=>{ if (!isAnnot(i) && i.tag) i.tag = nextTagIn(i.type, p); });
+  (p.mimics||[]).forEach(m=>{ m.id = uid(); }); delete p.__used;
+  if (src.room){ const t = src.room.a*Math.PI/180, W = src.cols*CELL_IN; p.room = {...src.room, x: Math.round(src.room.x + W*Math.cos(t)), y: Math.round(src.room.y + W*Math.sin(t))}; }
+  S.panels.splice(S.panels.indexOf(src)+1, 0, p); S.current = p.id; clearSel(); save(); renderAll();
+  flash(`Made “${name}” with new tag numbers`, true);
+}
+function nextTagIn(type, p){
+  const pre = TYPES[type].prefix; p.__used ||= {};
+  if (p.__used[pre]==null){ let n = 0; S.panels.forEach(q=>q.items.forEach(i=>{ const m = String(i.tag).match(new RegExp('^'+pre+'-(\\d+)$')); if (m) n = Math.max(n,+m[1]); })); p.__used[pre] = n; }
+  return `${pre}-${String(++p.__used[pre]).padStart(3,'0')}`;
 }
 function refreshMimics(){ const el = $('board').querySelector('svg.mimics'); if (el) el.outerHTML = mimicSvg(panel()); }
 const cell = () => BASE_PX*ZOOMS[ui.zoomI];
@@ -1600,8 +1663,10 @@ function nextTag(type){
 
 /* ---------- rendering ---------- */
 function renderTabs(){
-  $('tabs').innerHTML = S.panels.map(p=>`<button class="tab" data-p="${p.id}" aria-current="${p.id===S.current}">${esc(p.name)}</button>`).join('')
-    + `<button class="tab add" id="addBoard">+ Board</button>`;
+  $('tabs').hidden = ui.view==='list';
+  $('tabs').innerHTML = S.panels.map(p=>`<button class="btab" data-p="${p.id}" aria-current="${p.id===S.current}" title="${esc(p.name)} · ${inches(p.cols)} × ${inches(p.rows)} in"><span class="sw" style="background:${paint(p)}"></span>${esc(p.name)}<span class="cnt">${p.items.filter(i=>!isAnnot(i)).length}</span></button>`).join('')
+    + `<button class="btab add" id="addBoard" title="Add a board">+ New board</button>`
+    + `<div class="tabtool"><button class="btn" id="dupBoardTab" title="Make a copy of this board">Duplicate board</button></div>`;
 }
 function renderParts(){ const keepPaint = DRAWPAINT; DRAWPAINT = '#8fa596'; try { renderPartsInner(); } finally { DRAWPAINT = keepPaint; } }
 function renderPartsInner(){
@@ -1614,7 +1679,9 @@ function renderPartsInner(){
     return; }
   if (ui.view==='room'){ ensureRoom();
     $('parts').innerHTML = `<div class="group" style="border-top:0;margin-top:0">Arrange boards</div>
-      <div class="tools" style="padding:4px 12px 8px"><button class="btn" data-room="line">Straight line</button><button class="btn" data-room="arc">Horseshoe</button><button class="btn" data-room="add">+ Board</button></div>
+      <div class="tools" style="padding:4px 12px 8px"><button class="btn" data-room="line">Straight line</button><button class="btn" data-room="arc">Horseshoe</button></div>
+      <div class="group">Add to the room</div>
+      <div class="tools" style="padding:4px 12px 8px"><button class="btn" data-room="add-bench">+ Benchboard</button><button class="btn" data-room="add-vertical">+ Vertical panel</button><button class="btn" data-room="add-console">+ Console</button><button class="btn" data-room="dup">Duplicate selected</button></div>
       <div class="group">Boards</div>
       ${S.panels.map(p=>`<button class="part" data-roomsel="${p.id}" aria-pressed="${p.id===S.current}"><span class="thumb" style="background:${paint(p)}"></span><span><b>${esc(p.name)}</b><span>${inches(p.cols)} × ${inches(p.rows)} in · ${p.items.length} devices</span><i>angle ${Math.round(p.room.a)}°</i></span></button>`).join('')}
       <div class="keys" style="padding:8px 12px">Drag a board to move it · <kbd>[</kbd> <kbd>]</kbd> rotate 5°, with Shift 15° · arrows nudge 1 in, with Shift 1 ft · double-click a board to open it</div>`;
@@ -1706,7 +1773,9 @@ function renderInspector(){
     if (p.split!=null) h += field('Vertical section height (in)','splitIn',p.split*CELL_IN,'number','step="0.5" min="1"') + `<div class="readout">Bench below it: ${inches(p.rows-p.split-1)} in. You can also drag the rail on the board itself.</div>`;
     h += `<div class="field"><label for="f_r_a">Angle (°)</label><div class="tools"><input id="f_r_a" data-k="r_a" type="number" step="1" value="${r.a}" style="width:84px"><button class="btn" data-rot="-15">⟲ 15°</button><button class="btn" data-rot="15">⟳ 15°</button><button class="btn" data-rot="0">Square</button></div></div>`;
     h += `<div class="row2">${field('Left corner, from left wall (in)','r_x',Math.round(r.x),'number')}${field('Front edge, from back wall (in)','r_y',Math.round(r.y),'number')}</div>`;
-    h += `<button class="btn primary" id="openBoard">Open this board</button>`;
+    h += `<div class="field"><label>Board type</label><div class="viewseg" role="group" aria-label="Board type">${Object.entries(KINDS).map(([k,K])=>`<button class="segbtn" data-preset="${k}" aria-current="${boardKind(p)===k}">${K.label}</button>`).join('')}</div>
+      <div class="readout">Vertical panels have no bench and stand against the wall; benchboards add a sloped desk in front; consoles are low enough to see over.</div></div>`;
+    h += `<div class="tools"><button class="btn primary" id="openBoard">Open this board</button><button class="btn" id="dupBoard">Duplicate</button></div>`;
     h += `<div class="group" style="margin:0 -12px">Room</div><div class="row2">${field('Room width (ft)','roomW',R.w/12,'number','min="8" max="200"')}${field('Room depth (ft)','roomD',R.d/12,'number','min="8" max="200"')}</div>`;
     { const ck = roomChecks(), nb = ck.filter(c=>c.lvl!=='info').length;
       h += `<details class="guide" open id="ckRoom"><summary>Room check · ${ck.length ? `${nb} to fix, ${ck.length-nb} tip${ck.length-nb===1?'':'s'}` : 'all clear'}</summary>${checkList(ck)}<p class="readout">Rules of thumb: 36–48 in of aisle in front of boards, and either no gap or 24–36 in behind them for service.</p></details>`; }
@@ -1944,7 +2013,8 @@ FW FLOW/LO</pre>
       + Object.keys(counts).map(k=>`<tr><td>${esc(k)}</td><td>${counts[k]}</td></tr>`).join('')
       + `<tr><td>Total (all boards: ${all})</td><td>${p.items.length}</td></tr></tbody></table>`;
     h += `<div class="keys"><kbd>Esc</kbd> stop placing · <kbd>Del</kbd> remove · <kbd>←↑↓→</kbd> nudge · <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicate · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo</div>`;
-    if (S.panels.length>1) h += `<button class="btn danger" id="delBoard">${ui.confirmDel?'Click again to delete this board':'Delete board'}</button>`;
+    h += `<div class="tools"><button class="btn" id="dupBoard2">Duplicate board</button>${S.panels.length>1 ? `<button class="btn danger" id="delBoard">${ui.confirmDel?'Click again to delete this board':'Delete board'}</button>` : ''}</div>`;
+    if (false) h += `<button class="btn danger" id="delBoard">${ui.confirmDel?'Click again to delete this board':'Delete board'}</button>`;
     box.innerHTML = h;
   }
 }
@@ -2273,6 +2343,7 @@ $('insp').addEventListener('input', e=>{
   if (k==='brush' && ui.tool==='paint'){ ui.paintBrush = +v; return; }
   if (k.startsWith('rep_')){ ui.rep ||= {n:4,dir:'right',gap:1}; const f = k.slice(4); ui.rep[f] = f==='dir' ? v : +v;
     const rb = $('repBtn'); if (rb) rb.textContent = `Make ${ui.rep.n} cop${+ui.rep.n===1?'y':'ies'}`; return; }
+  if (k==='handle' && sel() && sel().type==='sb1'){ const it = sel(); it.handle = v; const n = positions(it).length; if (+it.pos >= n) it.pos = -1; save(); renderBoard(); renderInspector(); return; }
   if (k==='bold' && sel()){ sel().bold = v==='b'; save(); renderBoard(); return; }
   if (k==='lsize' && sel()){ sel().lsize = +v; save(); renderBoard(); renderInspector(); return; }
   if (k==='text' && sel() && sel().type==='ltext'){ sel().text = v; save(); renderBoard(); return; }
@@ -2291,7 +2362,9 @@ $('insp').addEventListener('input', e=>{
   if (k==='splitOn' && !sel()){ const p = panel(); p.split = v ? Math.round(p.rows*0.4) : null; if (p.room && v && !+p.room.bench) p.room.bench = 18; save(); if (ui.view==='room') renderRoom(); else renderBoard(); renderInspector(); return; }
   if (NUMERIC.has(k)){ v = parseFloat(v); if (!isFinite(v)) return; }
   if (!sel() && (k==='cols'||k==='rows')){
-    const p = panel(), need = Math.max(8, ...p.items.map(i=> k==='cols' ? i.x+dim(i).w : i.y+dim(i).h));
+    const p = panel(), ax = k==='cols' ? 0 : 1;
+    const need = Math.max(8, ...p.items.filter(i=>!isAnnot(i)).map(i=> ax===0 ? i.x+dim(i).w : i.y+dim(i).h),
+      ...(p.mimics||[]).flatMap(m=>m.pts.map(q=>q[ax])), ...Object.keys(p.tiles||{}).map(t=>+t.split(',')[ax]+1));
     v = clamp(Math.round(v), need, k==='cols'?400:200);
   }
   if (k==='channels') v = clamp(Math.round(v),1,4);
@@ -2327,6 +2400,7 @@ $('insp').addEventListener('click', e=>{
   if (e.target.id==='secSave') saveSection($('secName').value.trim());
   if (e.target.id==='rnBtn') renameTags();
   if (e.target.dataset.dupq!==undefined){ ui.list.q = e.target.dataset.dupq; ui.list.dups = false; renderParts(); renderList(); }
+  if (e.target.id==='dupBoard' || e.target.id==='dupBoard2'){ duplicateBoard(); return; }
   if (e.target.id==='openBoard'){ ui.view = 'boards'; renderAll(); }
   if (e.target.dataset.rot!==undefined){ const r = panel().room, d = +e.target.dataset.rot; checkpoint(); r.a = d===0 ? 0 : normA(r.a + d); save(); renderRoom(); renderParts(); renderInspector(); }
   if (e.target.id==='copyBtn') copySel();
@@ -2341,7 +2415,7 @@ $('insp').addEventListener('click', e=>{
 
 /* ---------- header & palette ---------- */
 $('parts').addEventListener('click', e=>{
-  const ra = e.target.closest('[data-room]'); if (ra){ const m = ra.dataset.room; if (m==='add') addBoard(); else arrange(m); return; }
+  const ra = e.target.closest('[data-room]'); if (ra){ const m = ra.dataset.room; if (m.startsWith('add')) addBoard(m.split('-')[1]); else if (m==='dup') duplicateBoard(); else arrange(m); return; }
   const sd = e.target.closest('[data-secdel]');
   if (sd){ const id = sd.dataset.secdel;
     if (ui.secDel!==id){ ui.secDel = id; renderParts(); setTimeout(()=>{ if (ui.secDel===id){ ui.secDel = null; renderParts(); } }, 3000); return; }
@@ -2357,14 +2431,25 @@ $('parts').addEventListener('change', e=>{
 $('vList').onclick = ()=>{ if (ui.mdraw) finishMimic(); ui.tool = null; ui.selMimic = null; ui.view = 'list'; renderAll(); };
 $('vRoom').onclick = ()=>{ if (ui.mdraw) finishMimic(); ui.tool = null; clearSel(); ui.selMimic = null; ui.view = 'room'; ensureRoom(); renderAll(); };
 $('tabs').addEventListener('click', e=>{
-  const b = e.target.closest('.tab'); if (!b) return;
+  if (e.target.closest('#dupBoardTab')){ duplicateBoard(); return; }
+  const b = e.target.closest('.btab'); if (!b) return;
   if (b.id==='addBoard'){
     addBoard(); return;
   }
-  S.current = b.dataset.p; clearSel(); ui.selMimic=null; ui.mdraw=null; save(); renderAll();
+  S.current = b.dataset.p; clearSel(); ui.selMimic=null; ui.mdraw=null; save(); renderAll(); fitView();
 });
-$('zoomIn').onclick = ()=>{ ui.zoomI = Math.min(ZOOMS.length-1, ui.zoomI+1); renderAll(); };
-$('zoomOut').onclick = ()=>{ ui.zoomI = Math.max(0, ui.zoomI-1); renderAll(); };
+function setZoom(i, cx, cy){
+  i = clamp(i, 0, ZOOMS.length-1); if (i===ui.zoomI) return;
+  const sc = $('scroller'), r = sc.getBoundingClientRect(), px = cx ?? r.width/2, py = cy ?? r.height/2, f = ZOOMS[i]/ZOOMS[ui.zoomI];
+  const ox = sc.scrollLeft + px, oy = sc.scrollTop + py;
+  ui.zoomI = i; renderAll(); sc.scrollLeft = ox*f - px; sc.scrollTop = oy*f - py;
+}
+$('zoomIn').onclick = ()=>setZoom(ui.zoomI+1);
+$('zoomOut').onclick = ()=>setZoom(ui.zoomI-1);
+$('scroller').addEventListener('wheel', e=>{
+  if (!(e.ctrlKey || e.metaKey) || ui.view==='list') return; e.preventDefault();
+  const r = $('scroller').getBoundingClientRect(); setZoom(ui.zoomI + (e.deltaY < 0 ? 1 : -1), e.clientX - r.left, e.clientY - r.top);
+}, {passive:false});
 $('undoBtn').onclick = doUndo;
 $('redoBtn').onclick = doRedo;
 
@@ -2409,6 +2494,8 @@ document.addEventListener('keydown', e=>{
   if (mod && key==='c'){ if (selIds().length){ e.preventDefault(); copySel(); } return; }
   if (mod && key==='v'){ if (ui.clip){ e.preventDefault(); pasteClip(); } return; }
   if (mod && key==='a'){ e.preventDefault(); setSelection(panel().items.map(i=>i.id)); renderBoard(); renderInspector(); return; }
+  if (!mod && (e.key==='+' || e.key==='=')){ e.preventDefault(); setZoom(ui.zoomI+1); return; }
+  if (!mod && (e.key==='-' || e.key==='_')){ e.preventDefault(); setZoom(ui.zoomI-1); return; }
   if (!mod && key==='p'){ e.preventDefault(); setTool('paint'); return; }
   if (!mod && key==='m'){ e.preventDefault(); setTool('measure'); return; }
   if (!mod && key==='r' && selIds().length){ if (turnSel(e.shiftKey ? -90 : 90)) e.preventDefault(); return; }
@@ -2812,6 +2899,14 @@ setInterval(()=>{
 }, 1000);
 
 histButtons();
+function fitView(){
+  if (ui.view==='room' || ui.view==='list') return;
+  const p = panel(), items = p.items.filter(i=>!isAnnot(i)), sc = $('scroller'), c = cell();
+  if (!items.length){ sc.scrollLeft = 0; sc.scrollTop = 0; return; }
+  const b = bbox(items), pad = 2*c;
+  sc.scrollLeft = Math.max(0, b.x*c - pad); sc.scrollTop = Math.max(0, b.y*c - pad);
+}
+requestAnimationFrame(fitView);
 renderAll();
 })();
 </script>
